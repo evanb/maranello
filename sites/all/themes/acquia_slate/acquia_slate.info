@@ -1,0 +1,113 @@
+; $Id: acquia_slate.info,v 1.4 2010/07/02 23:14:21 eternalistic Exp $
+
+name = Acquia Slate
+description = <a href="http://www.acquia.com">Acquia</a> Slate is a bright and colorful grid-based theme with point-and-click theming. Requires the <a href="http://drupal.org/project/fusion">Fusion Core</a> base theme and the <a href="http://drupal.org/project/skinr">Skinr</a> module. Created by <a href="http://www.topnotchthemes.com">TopNotchThemes</a> and <a href="http://fusiondrupalthemes.com">Fusion Drupal Themes</a>.
+base theme = fusion_core
+core = 6.x
+engine = phptemplate
+
+stylesheets[all][] = css/fusion-acquia-slate-style.css
+
+scripts[] = js/jquery.corner.js
+scripts[] = js/fusion-acquia-slate-script.js
+
+regions[sidebar_first] = sidebar first
+regions[sidebar_last] = sidebar last
+regions[header_top] = header top
+regions[header] = header
+regions[preface_top] = preface top
+regions[preface_bottom] = preface bottom
+regions[content_top] = content top
+regions[content] = content
+regions[content_bottom] = content bottom
+regions[postscript_top] = postscript top
+regions[postscript_bottom] = postscript bottom
+regions[footer] = footer
+regions[node_top] = node top
+regions[node_bottom] = node bottom
+
+features[] = logo
+features[] = name
+features[] = slogan
+features[] = node_user_picture
+features[] = comment_user_picture
+features[] = search
+features[] = favicon
+features[] = primary_links
+features[] = secondary_links
+
+; Default theme settings
+settings[theme_grid] = grid16-960
+settings[theme_grid_options][] = grid16-960
+settings[theme_grid_options][] = grid16-fluid
+settings[fluid_grid_width] = fluid-100
+settings[theme_font_size] = font-size-13
+settings[sidebar_layout] = sidebars-split
+settings[sidebar_first_width] = 3
+settings[sidebar_last_width] = 3
+
+; Inherit Skinr styles from parent themes
+skinr[options][inherit_skins] = true
+
+; Disable 12 column grid block widths inherited from fusion_core
+skinr[grid12-width] =
+
+; Acquia Slate background styles
+skinr[slate-background-styles][title] = Acquia Slate - Background Styles
+skinr[slate-background-styles][type] = radios
+skinr[slate-background-styles][features][] = block
+skinr[slate-background-styles][features][] = panels_display
+skinr[slate-background-styles][features][] = panels_pane
+skinr[slate-background-styles][features][] = panels_panel
+skinr[slate-background-styles][features][] = views_view
+skinr[slate-background-styles][options][1][label] = Dark transparent background
+skinr[slate-background-styles][options][1][class] = dark-transparent-background
+
+; Acquia Slate title styles
+skinr[slate-title-styles][title] = Acquia Slate - Title Styles
+skinr[slate-title-styles][type] = radios
+skinr[slate-title-styles][features][] = block
+skinr[slate-title-styles][features][] = panels_display
+skinr[slate-title-styles][features][] = panels_pane
+skinr[slate-title-styles][features][] = panels_panel
+skinr[slate-title-styles][features][] = views_view
+skinr[slate-title-styles][options][1][label] = White title with bold first word and capital letters
+skinr[slate-title-styles][options][1][class] = title-white-bold-first
+skinr[slate-title-styles][options][2][label] = Dual color bold title and capital letters with arrow
+skinr[slate-title-styles][options][2][class] = title-dual-color-arrow title-dual
+skinr[slate-title-styles][options][3][label] = Yellow title with bold and capital letters
+skinr[slate-title-styles][options][3][class] = title-yellow-bold
+
+; Acquia Slate - Rounded Corner Styles
+skinr[slate-rounded-styles][title] = Acquia Slate - Rounded Corner Styles
+skinr[slate-rounded-styles][type] = radios
+skinr[slate-rounded-styles][features][] = block
+skinr[slate-rounded-styles][features][] = panels_display
+skinr[slate-rounded-styles][features][] = panels_pane
+skinr[slate-rounded-styles][features][] = panels_panel
+skinr[slate-rounded-styles][features][] = views_view
+skinr[slate-rounded-styles][options][1][label] = Rounded corners with gray background
+skinr[slate-rounded-styles][options][1][class] = rounded-corners-gray-background
+skinr[slate-rounded-styles][options][2][label] = Rounded corners with gradient background and border
+skinr[slate-rounded-styles][options][2][class] = rounded-corners-gradient-background
+
+; Acquia Slate - Banner Styles
+skinr[slate-banner-styles][title] = Acquia Slate - Banner Styles
+skinr[slate-banner-styles][type] = radios
+skinr[slate-banner-styles][features][] = page
+skinr[slate-banner-styles][options][1][label] = Beach stones
+skinr[slate-banner-styles][options][1][class] = banner-background-beachstones banner-background
+skinr[slate-banner-styles][options][2][label] = City street lights
+skinr[slate-banner-styles][options][2][class] = banner-background-citystreetlights banner-background
+skinr[slate-banner-styles][options][3][label] = Greek heads
+skinr[slate-banner-styles][options][3][class] = banner-background-greekheads banner-background
+skinr[slate-banner-styles][options][4][label] = Seascape
+skinr[slate-banner-styles][options][4][class] = banner-background-seascape banner-background
+skinr[slate-banner-styles][options][5][label] = Windows
+skinr[slate-banner-styles][options][5][class] = banner-background-windows banner-background
+; Information added by drupal.org packaging script on 2010-07-02
+version = "6.x-3.0-beta1"
+core = "6.x"
+project = "acquia_slate"
+datestamp = "1278113703"
+

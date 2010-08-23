@@ -1,0 +1,13 @@
+/* $Id: ie7-fixes.css,v 1.2 2010/07/02 23:14:21 eternalistic Exp $ */
+
+/* Wrapper margins so rows don't touch */
+#header-group-wrapper.without-preface-top #header-group-inner,
+.postscript-bottom-wrapper {
+  margin-bottom: 1.5em;
+}
+
+/* Form inputs */
+.form-item .form-radio,
+.form-item .form-checkbox {
+  background: none !important;
+}
