@@ -1,5 +1,5 @@
 <?php
-// $Id: docs.php,v 1.1 2009/06/11 05:34:34 jgirlygirl Exp $
+// $Id: docs.php,v 1.1.4.1 2010/01/29 08:56:35 moonray Exp $
 /**
  * @file
  * This file contains no working PHP code; it exists to provide additional documentation
@@ -66,7 +66,7 @@
  * - "indexhandler" is required. It specifies a function that returns an index where
  *   Skinr can find the values in its data structure.
  */
-function hook_skinr_data() {
+function hook_skinr_config() {
   $data['example']['form']['block_admin_configure'] = array(
     'index_handler' => 'example_skinr_index_handler',
     'preprocess_hook' => 'block',

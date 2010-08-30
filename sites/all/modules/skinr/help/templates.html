@@ -1,0 +1,51 @@
+<div class="messages warning">This feature is still in experimental stages,
+  therefore it should NOT be used on live sites. There are still issues with it
+  that need to be worked out, and in general it will NOT be supported at the
+  moment. Please do not report and issues on this unless they include patches or
+  serious ideas about a way forward for this.
+</div>
+<p>At the moment, templates can be associated with a Skin, or just on their own:
+</p>
+<pre>
+skinr[rounded_corners][templates][] = rounded-corners-block
+skinr[rounded_corners][templates][] = rounded-corners-node</pre>
+<p>However, associating a template with a Skin doesn't automatically mean that
+  file will be used. It needs to be selected manually in the UI.
+</p>
+<p>Also, since there are different variables and template file structures
+  available per hook, it's necessary to provide template files for each type;
+  hence, the -block, -node suffix. This is required, and will automatically
+  filter out the template files that do no apply based on the -hook suffix.
+  While this can still be incredibly useful as is, it's obviously not ideal. An
+  implementation such as rounded corners would probably be better served as some
+  type of wrapper template (like comment-wrapper does today). Ideas and patches
+  to solve this issue are more than welcome.
+</p>
+
+<p>Some creative uses for template files could include:</p>
+
+<pre>
+skinr[extras][templates][] = minimal-block
+skinr[extras][templates][] = blank-block</pre>
+<p>By not specifying the regular widget options, like [title] and [description]
+  for Skins, the widget is conveniently hidden in the UI, but the template still
+  exists under advanced options. So, if you have a case where you don't need the
+  extra markup like the block title and , you can switch the template file to
+  use minimal-block.tpl.php and with the below in your template markup you'll
+  only get the <code>$skinr</code> class and the block content.
+</p>
+<p>In the above example, minimal-block.tpl.php could contain the following
+  markup:
+</p>
+<pre>
+&lt;div class=&quot;&lt;?php print $skinr; ?&gt;&quot;&gt;
+  &lt;?php print $block-&gt;content; ?&gt;
+&lt;/div&gt;</pre>
+<p>You could also specify a blank-block.tpl.php, which could contain only the content:</p>
+<pre>&lt;?php print $block-&gt;content; ?&gt;</pre>
+<p>Both of these examples are useful for cases where you might otherwise be
+  creating multiple template files for custom blocks just to remove markup,
+  which can get unruly. In this case you can just assign the appropriate
+  template file and be done with it, while keeping the number of template files
+  in your theme manageable.
+</p>

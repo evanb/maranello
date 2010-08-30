@@ -1,5 +1,5 @@
 <?php
-// $Id: block.skinr.inc,v 1.3.2.1 2009/12/29 08:26:27 moonray Exp $
+// $Id: block.skinr.inc,v 1.3.2.1.2.6 2010/04/05 22:41:45 moonray Exp $
 /**
  * @file
  * Provide skinr handling for block.module
@@ -12,21 +12,23 @@
  */
 
 /**
- * Implementation of hook_skinr_data().
+ * Implementation of hook_skinr_config().
  */
-function block_skinr_data() {
+function block_skinr_config() {
   $data['block']['form']['block_admin_configure'] = array(
     'index_handler' => 'block_skinr_form_index_handler',
-    'preprocess_hook' => 'block',
+    'preprocess_hook_callback' => 'block_skinr_preprocess_hook_callback',
     'title' => t('block settings'),
-    'skinr_weight' => 0,
-    'collapsed' => FALSE,
   );
   $data['block']['form']['block_add_block_form'] = array(
     'index_handler' => 'block_skinr_form_index_handler',
-    'preprocess_hook' => 'block',
+    'preprocess_hook_callback' => 'block_skinr_preprocess_hook_callback',
     'title' => t('block settings'),
-    'skinr_weight' => 0,
+  );
+  $data['block']['form']['skinr_ui_form'] = array(
+    'index_handler' => 'skinr_ajax_index_handler',
+    'preprocess_hook_callback' => 'block_skinr_preprocess_hook_callback',
+    'title' => t('block settings'),
     'collapsed' => FALSE,
   );
   $data['block']['preprocess']['block'] = array(
@@ -55,6 +57,7 @@ function block_skinr_data() {
 function block_skinr_form_index_handler($op, &$form, $form_state) {
   switch ($op) {
     case 'form':
+      $form['submit']['#weight'] = 50;
       return $form['module']['#value'] .'-'. $form['delta']['#value'];
 
     case 'submit':
@@ -69,6 +72,33 @@ function block_skinr_form_index_handler($op, &$form, $form_state) {
         return $form_state['values']['module'] .'-'. $form_state['values']['delta'];
       }
   }
+}
+
+/**
+ * Skinr preprocess_hook_callback.
+ *
+ * @param &$form
+ *   Passes in the $form parameter from hook_form_alter().
+ * @param $form_state
+ *   Passes in the $form_state parameter from hook_form_alter().
+ * @return
+ *   The preprocess_hook we wish to use.
+ */
+function block_skinr_preprocess_hook_callback(&$form, $form_state) {
+  $preprocess_hooks = array();
+
+  if (!isset($form['module']['#value']) && isset($form['skinr']['sid']['#value'])) {
+    $result = db_query_range(db_rewrite_sql("SELECT DISTINCT b.* FROM {blocks} b WHERE CONCAT(b.module, '-', b.delta) = '%s'", 'b', 'bid'), $form['skinr']['sid']['#value'], 0, 1);
+    while ($block = db_fetch_object($result)) {
+      $preprocess_hooks[] = 'block_'. $block->module;
+    }
+  }
+  else {
+    $preprocess_hooks[] = 'block_'. $form['module']['#value'];
+  }
+  $preprocess_hooks[] = 'block';
+
+  return $preprocess_hooks;
 }
 
 /**

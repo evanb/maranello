@@ -1,5 +1,5 @@
 <?php
-// $Id: panels.skinr.inc,v 1.8.2.5 2010/02/23 17:50:00 moonray Exp $
+// $Id: panels.skinr.inc,v 1.8.2.2.2.12 2010/05/25 10:26:56 moonray Exp $
 /**
  * @file
  * Provide skinr handling for panels.module.
@@ -12,9 +12,9 @@
  */
 
 /**
- * Implementation of hook_skinr_data().
+ * Implementation of hook_skinr_config().
  */
-function panels_skinr_data() {
+function panels_skinr_config() {
   $data['panels']['form']['panels_edit_style_settings_form'] = array(
     'index_handler' => 'panels_skinr_form_index_handler',
     'data_handler' => 'panels_skinr_data_handler',
@@ -22,6 +22,13 @@ function panels_skinr_data() {
     'preprocess_hook_callback' => 'panels_skinr_preprocess_hook_callback',
     'title' => t('panel pane settings'),
     'skinr_weight' => 0,
+    'collapsed' => FALSE,
+  );
+  // AJAX form.
+  $data['panels']['form']['skinr_ui_form'] = array(
+    'index_handler' => 'skinr_ajax_index_handler',
+    'preprocess_hook_callback' => 'panels_skinr_ajax_preprocess_hook_callback',
+    'title' => t('panel pane settings'),
     'collapsed' => FALSE,
   );
   // Panel pages.
@@ -105,8 +112,8 @@ function panels_skinr_access_handler_display($op, &$form, $form_state) {
       // Update and save button
 
       // Only add submit handler once.
-      if (!in_array('skinr_form_submit', $form['#submit'])) {
-        $form['#submit'][] = 'skinr_form_submit';
+      if (!in_array('skinr_ui_form_submit', $form['#submit'])) {
+        $form['#submit'][] = 'skinr_ui_form_submit';
       }
       break;
 
@@ -114,24 +121,24 @@ function panels_skinr_access_handler_display($op, &$form, $form_state) {
       // Submitting a panel page.
 
       // Only add submit handler once.
-      if (!in_array('skinr_form_submit', $form['#submit'])) {
-        $form['#submit'][] = 'skinr_form_submit';
+      if (!in_array('skinr_ui_form_submit', $form['#submit'])) {
+        $form['#submit'][] = 'skinr_ui_form_submit';
       }
-      if (isset($form['save']['#submit']) && !in_array('skinr_form_submit', $form['save']['#submit'])) {
-        $form['save']['#submit'][] = 'skinr_form_submit';
+      if (isset($form['save']['#submit']) && !in_array('skinr_ui_form_submit', $form['save']['#submit'])) {
+        $form['save']['#submit'][] = 'skinr_ui_form_submit';
       }
-      if (isset($form['cancel']['#submit']) && !in_array('skinr_form_submit', $form['cancel']['#submit'])) {
-        $form['cancel']['#submit'][] = 'skinr_form_submit';
+      if (isset($form['cancel']['#submit']) && !in_array('skinr_ui_form_submit', $form['cancel']['#submit'])) {
+        $form['cancel']['#submit'][] = 'skinr_ui_form_submit';
       }
       break;
 
     case 'panels_edit_display_form':
       // Only add submit handler once.
-      if (!in_array('skinr_form_submit', $form['#submit'])) {
-        $form['#submit'][] = 'skinr_form_submit';
+      if (!in_array('skinr_ui_form_submit', $form['#submit'])) {
+        $form['#submit'][] = 'skinr_ui_form_submit';
       }
-      if (isset($form['buttons']['submit']['#submit']) && !in_array('skinr_form_submit', $form['buttons']['submit']['#submit'])) {
-        $form['buttons']['submit']['#submit'][] = 'skinr_form_submit';
+      if (isset($form['buttons']['submit']['#submit']) && !in_array('skinr_ui_form_submit', $form['buttons']['submit']['#submit'])) {
+        $form['buttons']['submit']['#submit'][] = 'skinr_ui_form_submit';
       }
       break;
 
@@ -139,11 +146,11 @@ function panels_skinr_access_handler_display($op, &$form, $form_state) {
       // We only want to save or cancel on these other forms if we're dealing with a panel_page.
       if ($form_state['task']['name'] == 'panel_page') {
         // Only add submit handler once
-        if (!in_array('skinr_form_submit', $form['#submit'])) {
-          $form['#submit'][] = 'skinr_form_submit';
+        if (!in_array('skinr_ui_form_submit', $form['#submit'])) {
+          $form['#submit'][] = 'skinr_ui_form_submit';
         }
-        if (isset($form['buttons']['cancel']['#submit']) && !in_array('skinr_form_submit', $form['buttons']['cancel']['#submit'])) {
-          $form['buttons']['cancel']['#submit'][] = 'skinr_form_submit';
+        if (isset($form['buttons']['cancel']['#submit']) && !in_array('skinr_ui_form_submit', $form['buttons']['cancel']['#submit'])) {
+          $form['buttons']['cancel']['#submit'][] = 'skinr_ui_form_submit';
         }
       }
       break;
@@ -163,7 +170,7 @@ function panels_skinr_access_handler_display($op, &$form, $form_state) {
  * @param $module
  *   The module that is currently being processed.
  * @param $form_settings
- *   The settings from hook_skinr_data() for the form that's currently being
+ *   The settings from hook_skinr_config() for the form that's currently being
  *   processed.
  * @return
  *   TRUE if we get access, FALSE if we don't.
@@ -207,9 +214,9 @@ function panels_skinr_data_handler(&$form, $form_state, $theme, $module, $form_s
  */
 function panels_skinr_submit_handler_settings(&$form, $form_state, $module, $form_settings) {
   foreach ($form_state['values']['skinr_settings'][$module .'_group'] as $theme_name => $theme) {
-    if ((isset($theme['widgets']) && count($theme['widgets'])) || isset($theme['advanced']['_additional'])) {
+    if ((isset($theme['widgets']) && count($theme['widgets'])) || isset($theme['_additional'])) {
       $hook  = $module;
-      $key   = skinr_handler('form_index_handler', 'submit', $form_settings['index_handler'], $form, $form_state);
+      $sid   = skinr_handler('form_index_handler', 'submit', $form_settings['index_handler'], $form, $form_state);
 
       // Key doesn't exist properly for new displays. Perhaps we should inject a timestamp based key into the display object
       // and use that for reference on the final submit? If it works...
@@ -218,26 +225,26 @@ function panels_skinr_submit_handler_settings(&$form, $form_state, $module, $for
 
       if (is_array($theme['widgets'])) {
         foreach ($theme['widgets'] as $skin_id => $skin_value) {
-          $value[$skin_id] = is_array($skin_value) ? _skinr_array_strip_empty($skin_value) : $skin_value;
+          $value[$skin_id] = $skin_value;
         }
       }
 
-      if (isset($theme['advanced']['_additional'])) {
-        $theme['advanced']['_additional'] = trim($theme['advanced']['_additional']);
-        if (!empty($theme['advanced']['_additional'])) {
-          $value['_additional'] = $theme['advanced']['_additional'];
+      if (isset($theme['_additional'])) {
+        $theme['_additional'] = trim($theme['_additional']);
+        if (!empty($theme['_additional'])) {
+          $value['_additional'] = $theme['_additional'];
         }
       }
 
-      if (isset($theme['advanced']['_template'])) {
-        $theme['advanced']['_template'] = trim($theme['advanced']['_template']);
-        if (!empty($theme['advanced']['_template'])) {
-          $value['_template'] = $theme['advanced']['_template'];
+      if (isset($theme['_template'])) {
+        $theme['_template'] = trim($theme['_template']);
+        if (!empty($theme['_template'])) {
+          $value['_template'] = $theme['_template'];
         }
       }
 
-      if (empty($key)) {
-        // We didn't receive a valid key, so raise an error.
+      if (empty($sid)) {
+        // We didn't receive a valid sid, so raise an error.
         drupal_set_message(t("Skinr settings weren't saved due to an error."), 'error');
       }
 
@@ -255,7 +262,7 @@ function panels_skinr_submit_handler_settings(&$form, $form_state, $module, $for
           }
         }
       }
-      $skinr_data[$theme_name][$key] = $value;
+      $skinr_data[$theme_name][$sid] = $value;
       ctools_object_cache_set('skinr', $form_state['display']->did, $skinr_data);
     }
   }
@@ -310,8 +317,14 @@ function panels_skinr_submit_handler_display(&$form, $form_state, $module, $form
 function _panels_skinr_save_and_clear_cache($did) {
   if ($skinr_data = ctools_object_cache_get('skinr', $did, TRUE)) {
     foreach ($skinr_data as $theme_name => $theme) {
-      foreach ($theme as $key => $value) {
-        skinr_set($theme_name, 'panels', $key, $value);
+      foreach ($theme as $sid => $skins) {
+        $skinr = new stdClass();
+        $skinr->theme = $theme_name;
+        $skinr->module = 'panels';
+        $skinr->sid = $sid;
+        $skinr->skins = $skins;
+
+        skinr_set($skinr);
       }
     }
     ctools_object_cache_clear('skinr', $did);
@@ -340,6 +353,28 @@ function panels_skinr_preprocess_hook_callback(&$form, $form_state) {
 }
 
 /**
+ * Skinr preprocess_hook_callback.
+ *
+ * @param &$form
+ *   Passes in the $form parameter from hook_form_alter().
+ * @param $form_state
+ *   Passes in the $form_state parameter from hook_form_alter().
+ * @return
+ *   The preprocess_hook we wish to use.
+ */
+function panels_skinr_ajax_preprocess_hook_callback(&$form, $form_state) {
+  if (strpos($form['skinr']['sid']['#value'], '-panel-') !== FALSE) {
+    return 'panels_panel';
+  }
+  elseif (strpos($form['skinr']['sid']['#value'], '-pane-') !== FALSE) {
+    return 'panels_pane';
+  }
+  else {
+    return 'panels_display';
+  }
+}
+
+/**
  * Skinr preprocess index handler.
  *
  * @param &$vars
@@ -351,8 +386,8 @@ function panels_skinr_preprocess_hook_callback(&$form, $form_state) {
  */
 function panels_skinr_preprocess_index_handler(&$vars) {
   $index = '';
-  if ($vars['pane']->style['style'] == 'skinr') {
-    $index =  'display-'. $vars['pane']->did .'-pane-'. $vars['pane']->pid;
+  if (isset($vars['pane']->style['style']) && $vars['pane']->style['style'] == 'skinr') {
+    $index = 'display-'. $vars['pane']->did .'-pane-'. $vars['pane']->pid;
   }
   return $index;
 }
@@ -370,91 +405,8 @@ function skinr_ctools_plugin_directory($module, $plugin) {
     return;
   }
   if ($module == 'panels') {
-    return 'modules/'. $plugin;
+    return 'modules/panels';
   }
-}
-
-/**
- * Implementation of hook_panels_style_info().
- */
-function skinr_panels_styles() {
-  return array(
-    'skinr' => array(
-      'title'              => t('Skinr'),
-      'description'        => t('Allows you to apply Skinr skins.'),
-      'render panel'       => 'panels_skinr_style_render_panel',
-      'render pane'        => 'panels_skinr_style_render_pane',
-      'settings form'      => 'panels_skinr_style_settings_form',
-      'pane settings form' => 'panels_skinr_style_settings_form',
-    ),
-  );
-}
-
-//----------------------------------------------------------------------------
-// Panels style plugin callbacks.
-
-/**
- * Render panel callback.
- *
- * @todo: Need to wait for a panels update to panels_render_panel()
- *        The panel_id is not sent through properly, yet. Once it works as
- *        promised, we can remove the workaround.
- */
-function theme_panels_skinr_style_render_panel($display, $panel_id, $panes, $settings) {
-  // Workaround for missing/invalid $panel_id.
-  if (empty($panel_id)) {
-    // We grab the first pane that we know exists in this panel and extract the panel_id from it.
-    $panes_keys = array_keys($panes);
-    $panel_id = $display->content[$panes_keys[0]]->panel;
-  }
-
-  $output = '';
-  $print_separator = FALSE;
-  foreach ($panes as $pane_id => $content) {
-    // Add the separator if we've already displayed a pane.
-    if ($print_separator) {
-      $output .= '<div class="panel-separator"></div>';
-    }
-    $output .= $text = panels_render_pane($content, $display->content[$pane_id], $display);
-
-    // If we displayed a pane, this will become true; if not, it will become
-    // false.
-    $print_separator = (bool) $text;
-  }
-
-  // Add skinr styles
-  $hook = 'panels';
-  if (isset($display->panel_settings[$panel_id]['style']) && isset($display->panel_settings[$panel_id]['style']) == 'skinr') {
-    // Specific style set for this panel.
-    $key = 'display-'. $display->did .'-panel-'. $panel_id;
-  }
-  else {
-    // No specific style set, so use the display's style.
-    $key = 'display-'. $display->did;
-  }
-  $style = skinr_style_array_to_string(skinr_get(NULL, $hook, $key));
-
-  if (!empty($style)) {
-    $output = '<div class="'. $style .'">'. $output .'</div>';
-  }
-
-  return $output;
-}
-
-/**
- * Render pane callback.
- */
-function theme_panels_skinr_style_render_pane($content, $pane, $display) {
-  return theme('panels_pane', $content, $pane, $display);
-}
-
-/**
- * Settings form callback.
- */
-function panels_skinr_style_settings_form($settings, $panels_display = NULL, $region = NULL, $type = NULL) {
-  // Return an empty form, and let skinr handle the rest.
-  $form = array();
-  return $form;
 }
 
 /**

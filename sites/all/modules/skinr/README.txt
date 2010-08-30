@@ -1,6 +1,3 @@
-// $Id: README.txt,v 1.8 2009/10/20 03:54:42 jgirlygirl Exp $
+// $Id: README.txt,v 1.8.4.1 2010/03/04 08:42:56 jgirlygirl Exp $
 
-Please refer to the following for documentation:
-
-Introduction: http://drupal.org/node/578552
-Documentation: http://drupal.org/node/578574
+Please install the [Advanced Help](http://drupal.org/project/advanced_help) module and visit: admin/advanced_help/skinr for documentation.

@@ -1,5 +1,5 @@
 <?php
-// $Id: node.skinr.inc,v 1.3.2.1 2009/12/29 08:26:27 moonray Exp $
+// $Id: node.skinr.inc,v 1.3.2.1.2.5 2010/03/04 14:06:59 moonray Exp $
 /**
  * @file
  * Provide skinr handling for node.module
@@ -12,13 +12,19 @@
  */
 
 /**
- * Implementation of hook_skinr_data().
+ * Implementation of hook_skinr_config().
  */
-function node_skinr_data() {
+function node_skinr_config() {
   $data['node']['form']['node_type_form'] = array(
     'index_handler' => 'node_skinr_form_index_handler',
-    'preprocess_hook' => 'node',
+    'preprocess_hook_callback' => 'node_skinr_preprocess_hook_callback',
     'title' => t('node settings'),
+  );
+  $data['node']['form']['skinr_ui_form'] = array(
+    'index_handler' => 'skinr_ajax_index_handler',
+    'preprocess_hook_callback' => 'node_skinr_preprocess_hook_callback',
+    'title' => t('node settings'),
+    'collapsed' => FALSE,
   );
   $data['node']['preprocess']['node'] = array(
     'index_handler' => 'node_skinr_preprocess_index_handler',
@@ -52,11 +58,41 @@ function node_skinr_form_index_handler($op, &$form, $form_state) {
       // Clear old variable before we set a new one if the node type has changed
       if ($form_state['values']['old_type'] != $form_state['values']['type']) {
         foreach ($form_state['values']['skinr_settings']['node_group'] as $theme_name => $theme_data) {
-          skinr_set($theme_name, 'comment', $form_state['values']['old_type'], '');
+          $skinr = new stdClass();
+          $skinr->theme = $theme_name;
+          $skinr->module = 'node';
+          $skinr->sid = $form_state['values']['old_type'];
+          $skinr->skins = array();
+
+          skinr_set($skinr);
         }
       }
     return $form_state['values']['type'];
   }
+}
+
+/**
+ * Skinr preprocess_hook_callback.
+ *
+ * @param &$form
+ *   Passes in the $form parameter from hook_form_alter().
+ * @param $form_state
+ *   Passes in the $form_state parameter from hook_form_alter().
+ * @return
+ *   The preprocess_hook we wish to use.
+ */
+function node_skinr_preprocess_hook_callback(&$form, $form_state) {
+  $preprocess_hooks = array();
+
+  if (!isset($form['#node_type']->type) && !empty($form['skinr']['sid']['#value'])) {
+    $preprocess_hooks[] = 'node_'. $form['skinr']['sid']['#value'];
+  }
+  else {
+    $preprocess_hooks[] = 'node_'. $form['#node_type']->type;
+  }
+  $preprocess_hooks[] = 'node';
+
+  return $preprocess_hooks;
 }
 
 /**
