@@ -4,8 +4,6 @@ Template Name: Maranello Home Page
 */
 ?>                      
 
-Evan got here!
-
 <?php 
 
 // Use the default Genesis index.php 
