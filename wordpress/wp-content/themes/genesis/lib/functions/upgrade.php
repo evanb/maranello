@@ -57,19 +57,55 @@ function genesis_update_check() {
 	return $genesis_update;
 }
 
+/**
+ * Upgrade the database to version 1703
+ *
+ * @since 1.7.1
+ */
+function genesis_upgrade_1703() {
+
+	/** Update Settings */
+	_genesis_update_settings( array(
+		'theme_version' => '1.7.1',
+		'db_version' => '1703'
+	) );
+
+}
+
+/**
+ * Upgrade the database to version 1700
+ *
+ * @since 1.7
+ */
+function genesis_upgrade_1700() {
+	
+	global $wpdb;
+
+	/** Changing the UI. Remove old user options. */
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE meta_key = %s OR meta_key = %s", 'meta-box-order_toplevel_page_genesis', 'meta-box-order_genesis_page_seosettings' ) );
+	$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->usermeta SET meta_value = %s WHERE meta_key = %s OR meta_key = %s", '1', 'screen_layout_toplevel_page_genesis', 'screen_layout_genesis_page_seosettings' ) );
+
+	/** Update Settings */
+	_genesis_update_settings( array(
+		'db_version' => '1700'
+	) );
+
+}
+
 add_action('admin_init', 'genesis_upgrade');
 /**
- * This function upgrades the Genesis database entries.
- * It pushes in any new defaults, and upgrades the theme_version
- * field to reflect the changeset so the new stuff only gets
- * pushed in once.
+ * This iterative upgrade function will take a Genesis installation,
+ * no matter how old, and upgrade its options to the latest version.
+ *
+ * It used to iterate over theme version, but now uses a database
+ * version system, which allows for changes within pre-releases, too.
  *
  * @since 1.0.1
  */
 function genesis_upgrade() {
 
 	// Don't do anything if we're on the latest version
-	if ( version_compare(genesis_get_option('theme_version'), PARENT_THEME_VERSION, '>=') )
+	if ( genesis_get_option( 'db_version' ) >= PARENT_DB_VERSION )
 		return;
 
 	#########################
@@ -217,21 +253,18 @@ function genesis_upgrade() {
 
 	}
 	
-	#########################
-#	UPGRADE TO VERSION 1.6.1
-	#########################
-
-	// Check to see if we need to upgrade to 1.6.1
-	if ( version_compare(genesis_get_option('theme_version'), '1.6.1', '<') ) {
-
-		$theme_settings = get_option(GENESIS_SETTINGS_FIELD);
-		$new_settings = array(
-			'theme_version' => '1.6.1'
-		);
-
-		$settings = wp_parse_args($new_settings, $theme_settings);
-		update_option(GENESIS_SETTINGS_FIELD, $settings);
-
+	##########################
+#	UPGRADE DB TO VERSION 1700
+	##########################
+	if ( genesis_get_option( 'db_version' ) < '1700' ) {
+		genesis_upgrade_1700();
+	}
+	
+	##########################
+#	UPGRADE DB TO VERSION 1703
+	##########################
+	if ( genesis_get_option( 'db_version' ) < '1703' ) {
+		genesis_upgrade_1703();
 	}
 
 	do_action( 'genesis_upgrade' );
@@ -435,4 +468,14 @@ function _genesis_vestige( $keys = array(), $setting = GENESIS_SETTINGS_FIELD ) 
 	update_option( 'genesis-vestige', $vestige );
 	update_option( $setting, $options );
 
+}
+
+/**
+ * This function takes an array of new settings, merges them with the old settings,
+ * and pushes them into the database via update_option().
+ *
+ * @since 1.7
+ */
+function _genesis_update_settings( $new = '', $setting = GENESIS_SETTINGS_FIELD ) {
+	update_option( $setting, wp_parse_args( $new, get_option( $setting ) ) );
 }

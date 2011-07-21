@@ -28,13 +28,13 @@ function genesis_get_comments_template() {
 
 add_action( 'genesis_comments', 'genesis_do_comments' );
 /**
- * Echo Genesis default comment structure. 
- * 
- * @since 1.1.2 
- * @uses genesis_get_option() 
- * 
- * @global unknown $post 
- * @global WP_Query $wp_query 
+ * Echo Genesis default comment structure.
+ *
+ * @since 1.1.2
+ * @uses genesis_get_option()
+ *
+ * @global unknown $post
+ * @global WP_Query $wp_query
  * @return null Return null if on a page with Genesis pages comments off, or a post and Genesis posts comments off.
  */
 function genesis_do_comments() {
@@ -78,13 +78,13 @@ function genesis_do_comments() {
 
 add_action( 'genesis_pings', 'genesis_do_pings' );
 /**
- * Echo Genesis default trackback structure. 
- * 
- * @since 1.1.2 
- * @uses genesis_get_option() 
- * 
- * @global unknown $post 
- * @global WP_Query $wp_query 
+ * Echo Genesis default trackback structure.
+ *
+ * @since 1.1.2
+ * @uses genesis_get_option()
+ *
+ * @global unknown $post
+ * @global WP_Query $wp_query
  * @return null Return null if on a page with Genesis pages trackbacks off, or a post and Genesis posts trackbacks off.
  */
 function genesis_do_pings() {
@@ -153,8 +153,8 @@ function genesis_default_list_pings() {
  *
  * @since 1.0
  *
- * @param unknown $comment 
- * @param array $args 
+ * @param unknown $comment
+ * @param array $args
  * @param integer $depth
  */
 function genesis_comment_callback( $comment, $args, $depth ) {
@@ -170,7 +170,7 @@ function genesis_comment_callback( $comment, $args, $depth ) {
 	 	</div><!-- end .comment-author -->
 
 		<div class="comment-meta commentmetadata">
-			<a href="<?php echo esc_attr( get_comment_link( $comment->comment_ID ) ); ?>"><?php printf( __( '%1$s at %2$s', 'genesis' ), get_comment_date(), get_comment_time() ); ?></a>
+			<a href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ); ?>"><?php printf( __( '%1$s at %2$s', 'genesis' ), get_comment_date(), get_comment_time() ); ?></a>
 			<?php edit_comment_link( __( 'Edit', 'genesis' ), g_ent( '&bull; ' ), '' ); ?>
 		</div><!-- end .comment-meta -->
 
@@ -197,8 +197,8 @@ add_action( 'genesis_comment_form', 'genesis_do_comment_form' );
  *
  * @since 1.0
  *
- * @global unknown $user_identity 
- * @global unknown $id 
+ * @global unknown $user_identity
+ * @global unknown $id
  * @return null Returns null if Genesis disables comments for this page or post
  */
 function genesis_do_comment_form() {

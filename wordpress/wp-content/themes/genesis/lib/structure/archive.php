@@ -26,10 +26,8 @@ function genesis_do_taxonomy_title_description() {
 	if ( ! $term || ! isset( $term->meta ) )
 		return;
 
-	global $_genesis_formatting_allowedtags;
-
 	$title = $term->meta['display_title'] ? sprintf( '<h1>%s</h1>', esc_html( $term->name ) ) : '';
-	$description = $term->meta['display_description'] ? wpautop( wp_kses( $term->description, $_genesis_formatting_allowedtags ) ) : '';
+	$description = $term->meta['display_description'] ? wpautop( wp_kses( $term->description, genesis_formatting_allowedtags() ) ) : '';
 
 	if ( $title || $description ) {
 		printf( '<div class="taxonomy-description">%s</div>', $title . $description );
@@ -54,10 +52,8 @@ function genesis_do_author_title_description() {
 	$headline = get_the_author_meta( 'headline', (int) get_query_var( 'author' ) );
 	$intro_text = get_the_author_meta( 'intro_text', (int) get_query_var( 'author' ) );
 
-	global $_genesis_formatting_allowedtags;
-
 	$headline = $headline ? sprintf( '<h1>%s</h1>', esc_html( $headline ) ) : '';
-	$intro_text = $intro_text ? wpautop( wp_kses( $intro_text, $_genesis_formatting_allowedtags ) ) : '';
+	$intro_text = $intro_text ? wpautop( wp_kses( $intro_text, genesis_formatting_allowedtags() ) ) : '';
 
 	if ( $headline || $intro_text ) {
 		printf( '<div class="author-description">%s</div>', $headline . $intro_text );

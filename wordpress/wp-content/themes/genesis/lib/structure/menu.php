@@ -139,7 +139,7 @@ function genesis_nav_right($menu, $args) {
 		return $menu;
 
 	if ( genesis_get_option('nav_extras') == 'rss' ) {
-		$rss = '<a rel="nofollow" href="'.get_bloginfo('rss_url').'">'.__('Posts', 'genesis').'</a>';
+		$rss = '<a rel="nofollow" href="'.get_bloginfo('rss2_url').'">'.__('Posts', 'genesis').'</a>';
 		$rss .= '<a rel="nofollow" href="'.get_bloginfo('comments_rss2_url').'">'.__('Comments', 'genesis').'</a>';
 
 		$menu .= '<li class="right rss">'.$rss.'</li>';

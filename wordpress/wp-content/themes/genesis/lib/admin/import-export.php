@@ -19,26 +19,26 @@ function genesis_import_export_admin() { ?>
 			<table class="form-table"><tbody>
 
 				<tr>
-					<th scope="row"><p><b><?php _e( 'Import Genesis Settings File', 'genesis' ); ?></b></p></th>
+					<th scope="row"><b><?php _e( 'Import Genesis Settings File', 'genesis' ); ?></p></th>
 					<td>
-						<p><?php _e( 'Upload the data file from your computer (.json) and we\'ll import your settings.', 'genesis' ); ?></p>
-						<p><?php _e( 'Choose the file from your computer and click "Upload and Import"', 'genesis' ); ?></p>
+						<p><?php _e( 'Upload the data file (<code>.json</code>) from your computer and we\'ll import your settings.', 'genesis' ); ?></p>
+						<p><?php _e( 'Choose the file from your computer and click "Upload file and Import"', 'genesis' ); ?></p>
 						<p>
 							<form enctype="multipart/form-data" method="post" action="<?php echo menu_page_url( 'genesis-import-export', 0 ); ?>">
 								<?php wp_nonce_field( 'genesis-import' ); ?>
 								<input type="hidden" name="genesis-import" value="1" />
 								<label for="genesis-import-upload"><?php sprintf( __( 'Upload File: (Maximum Size: %s)', 'genesis' ), ini_get('post_max_size') ); ?></label>
 								<input type="file" id="genesis-import-upload" name="genesis-import-upload" size="25" />
-								<input type="submit" class="button" value="<?php _e( 'Upload file and import', 'genesis' ); ?>" />
+								<input type="submit" class="button" value="<?php _e( 'Upload File and Import', 'genesis' ); ?>" />
 							</form>
 						</p>
 					</td>
 				</tr>
 
 				<tr>
-					<th scope="row"><p><b><?php _e( 'Export Genesis Settings File', 'genesis' ); ?></b></p></th>
+					<th scope="row"><b><?php _e( 'Export Genesis Settings File', 'genesis' ); ?></b></th>
 					<td>
-						<p><?php _e( 'When you click the button below, Genesis will generate a JSON file for you to save to your computer.', 'genesis' ); ?></p>
+						<p><?php _e( 'When you click the button below, Genesis will generate a data file (<code>.json</code>) for you to save to your computer.', 'genesis' ); ?></p>
 						<p><?php _e( 'Once you have saved the download file, you can use the import function on another site to import this data.', 'genesis' ); ?></p>
 						<p>
 							<form method="post" action="<?php echo menu_page_url( 'genesis-import-export', 0 ); ?>">
@@ -71,15 +71,13 @@ add_action('admin_notices', 'genesis_import_export_notices');
  */
 function genesis_import_export_notices() {
 
-	if ( !isset($_REQUEST['page']) || $_REQUEST['page'] != 'genesis-import-export' )
+	if ( ! isset( $_REQUEST['page'] ) || $_REQUEST['page'] != 'genesis-import-export' )
 		return;
 
-	if ( isset( $_REQUEST['imported'] ) && $_REQUEST['imported'] == 'true' ) {
-		echo '<div id="message" class="updated"><p><strong>'.__('Settings successfully imported!', 'genesis').'</strong></p></div>';
-	}
-	elseif ( isset($_REQUEST['error']) && $_REQUEST['error'] == 'true') {
-		echo '<div id="message" class="error"><p><strong>'.__('There was a problem importing your settings. Please try again.', 'genesis').'</strong></p></div>';
-	}
+	if ( isset( $_REQUEST['imported'] ) && 'true' == $_REQUEST['imported'] )
+		echo '<div id="message" class="updated"><p><strong>' . __( 'Settings successfully imported.', 'genesis' ) . '</strong></p></div>';
+	elseif ( isset( $_REQUEST['error'] ) && 'true' == $_REQUEST['error'] )
+		echo '<div id="message" class="error"><p><strong>' . __( 'There was a problem importing your settings. Please try again.', 'genesis' ) . '</strong></p></div>';
 
 }
 

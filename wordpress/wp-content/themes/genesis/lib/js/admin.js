@@ -44,15 +44,28 @@ jQuery(document).ready(function($) {
 	}
 
 	function genesis_category_checklist_toggle() {
-		$category_checklist_toggle = $('<li class="check-column"><label><input type="checkbox" value="" /> <em>' + genesis.category_checklist_toggle + '</em></label></li>');
+		$('<p><span id="genesis-category-checklist-toggle" class="button">' + genesis.category_checklist_toggle + '</span></p>').insertBefore('ul.categorychecklist');
 
-		$category_checklist_toggle.prependTo($('#categorydiv .categorychecklist'));
+		$('#genesis-category-checklist-toggle').live('click.genesis', function (event) {
+			var $this = $(this),
+				checkboxes = $this.parent().next().find(':checkbox');
 
-		$('.check-column :checkbox').click(function (e) {
-			$(this).closest('#categorydiv .categorychecklist').find(':checkbox').attr('checked', $(this).attr('checked'));
+			if ($this.data('clicked')) {
+				checkboxes.attr('checked', false);
+				$this.data('clicked', false);
+			} else {
+				checkboxes.attr('checked', true);
+				$this.data('clicked', true);
+			}
 		});
 	}
 	genesis_category_checklist_toggle();
+	
+	$('.genesis-layout-selector input[type="radio"]').change(function() {
+	    var tmp=$(this).attr('name');
+	    $('input[name="'+tmp+'"]').parent("label").removeClass("selected");
+	    $(this).parent("label").toggleClass("selected", this.selected);      
+	});
 
 });
 

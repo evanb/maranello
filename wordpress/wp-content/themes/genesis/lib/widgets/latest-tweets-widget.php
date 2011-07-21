@@ -5,15 +5,31 @@
  * @package Genesis
  */
 
-add_action('widgets_init', create_function('', "register_widget('Genesis_Latest_Tweets_Widget');"));
+
+/**
+ * Genesis Latest Tweets widget class.
+ *
+ * @package Genesis
+ * @subpackage Widgets
+ * @since unknown
+ */
 class Genesis_Latest_Tweets_Widget extends WP_Widget {
 
+	/**
+	 * Constructor. Set the default widget options and create widget.
+	 */
 	function Genesis_Latest_Tweets_Widget() {
 		$widget_ops = array( 'classname' => 'latest-tweets', 'description' => __('Display a list of your latest tweets', 'genesis') );
 		$control_ops = array( 'width' => 200, 'height' => 250, 'id_base' => 'latest-tweets' );
 		$this->WP_Widget( 'latest-tweets', __('Genesis - Latest Tweets', 'genesis'), $widget_ops, $control_ops );
 	}
 
+	/**
+	 * Echo the widget content.
+	 *
+	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
+	 * @param array $instance The settings for the particular instance of the widget
+	 */
 	function widget($args, $instance) {
 		extract($args);
 
@@ -95,15 +111,29 @@ class Genesis_Latest_Tweets_Widget extends WP_Widget {
 		echo $after_widget;
 	}
 
+	/** Update a particular instance.
+	 *
+	 * This function should check that $new_instance is set correctly.
+	 * The newly calculated value of $instance should be returned.
+	 * If "false" is returned, the instance won't be saved/updated.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via form()
+	 * @param array $old_instance Old settings for this instance
+	 * @return array Settings to save or bool false to cancel saving
+	 */
 	function update($new_instance, $old_instance) {
 
 		// Force the transient to refresh
 		delete_transient($old_instance['twitter_id'].'-'.$old_instance['twitter_num'].'-'.$old_instance['twitter_duration']);
-
+		$new_instance['title'] = strip_tags( $new_instance['title'] );
 		return $new_instance;
 
 	}
 
+	/** Echo the settings update form.
+	 *
+	 * @param array $instance Current settings
+	 */
 	function form($instance) {
 
 		$instance = wp_parse_args( (array)$instance, array(
@@ -137,14 +167,14 @@ class Genesis_Latest_Tweets_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo $this->get_field_id('twitter_duration'); ?>"><?php _e('Load new Tweets every', 'genesis'); ?></label>
 			<select name="<?php echo $this->get_field_name('twitter_duration'); ?>" id="<?php echo $this->get_field_id('twitter_duration'); ?>">
-				<option value="5" <?php selected(5, $instance['twitter_duration']); ?>>5 Min.</option>
-				<option value="15" <?php selected(15, $instance['twitter_duration']); ?>>15 Min.</option>
-				<option value="30" <?php selected(30, $instance['twitter_duration']); ?>>30 Min.</option>
-				<option value="60" <?php selected(60, $instance['twitter_duration']); ?>>1 Hour</option>
-				<option value="120" <?php selected(120, $instance['twitter_duration']); ?>>2 Hours</option>
-				<option value="240" <?php selected(240, $instance['twitter_duration']); ?>>4 Hours</option>
-				<option value="720" <?php selected(720, $instance['twitter_duration']); ?>>12 Hours</option>
-				<option value="1440" <?php selected(1440, $instance['twitter_duration']); ?>>24 Hours</option>
+				<option value="5" <?php selected(5, $instance['twitter_duration']); ?>><?php _e( '5 Min.' , 'genesis' ); ?></option>
+				<option value="15" <?php selected(15, $instance['twitter_duration']); ?>><?php _e( '15 Minutes' , 'genesis' ); ?></option>
+				<option value="30" <?php selected(30, $instance['twitter_duration']); ?>><?php _e( '30 Minutes' , 'genesis' ); ?></option>
+				<option value="60" <?php selected(60, $instance['twitter_duration']); ?>><?php _e( '1 Hour' , 'genesis' ); ?></option>
+				<option value="120" <?php selected(120, $instance['twitter_duration']); ?>><?php _e( '2 Hours' , 'genesis' ); ?></option>
+				<option value="240" <?php selected(240, $instance['twitter_duration']); ?>><?php _e( '4 Hours' , 'genesis' ); ?></option>
+				<option value="720" <?php selected(720, $instance['twitter_duration']); ?>><?php _e( '12 Hours' , 'genesis' ); ?></option>
+				<option value="1440" <?php selected(1440, $instance['twitter_duration']); ?>><?php _e( '24 Hours' , 'genesis' ); ?></option>
 			</select>
 		</p>
 

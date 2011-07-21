@@ -72,7 +72,7 @@ add_filter('body_class', 'genesis_header_body_classes');
 function genesis_header_body_classes($classes) {
 
 	// add header classes to $classes array
-	if ( !genesis_get_option('header_right') )
+	if ( ! is_active_sidebar( 'header-right' ) )
 		$classes[] = 'header-full-width';
 
 	if ( 'image' == genesis_get_option('blog_title') || 'blank' == get_header_textcolor() )

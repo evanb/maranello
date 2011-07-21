@@ -16,7 +16,7 @@ function genesis_feed_links_filter( $output, $feed ) {
 	$feed_uri = genesis_get_option('feed_uri');
 	$comments_feed_uri = genesis_get_option('comments_feed_uri');
 
-	if ( $feed_uri && !strpos($output, 'comments') ) {
+	if ( $feed_uri && ! strpos($output, 'comments') && ( '' == $feed || 'rss2' == $feed || 'rss' == $feed || 'rdf' == $feed || 'atom' == $feed ) ) {
 		$output = esc_url( $feed_uri );
 	}
 
@@ -36,7 +36,7 @@ add_action('template_redirect', 'genesis_feed_redirect');
  */
 function genesis_feed_redirect() {
 
-	if ( !is_feed() || preg_match("/feedburner|feedvalidator/i", $_SERVER['HTTP_USER_AGENT']) )
+	if ( ! is_feed() || preg_match("/feedburner|feedvalidator/i", $_SERVER['HTTP_USER_AGENT']) )
 		return;
 
 	// Don't redirect if viewing archive, search, or post comments feed
@@ -46,7 +46,7 @@ function genesis_feed_redirect() {
 	$feed_uri = genesis_get_option('feed_uri');
 	$comments_feed_uri = genesis_get_option('comments_feed_uri');
 
-	if ( $feed_uri && !is_comment_feed() && genesis_get_option('redirect_feed') ) {
+	if ( $feed_uri && ! is_comment_feed() && genesis_get_option('redirect_feed') ) {
 		wp_redirect($feed_uri, 302);
 		exit;
 	}

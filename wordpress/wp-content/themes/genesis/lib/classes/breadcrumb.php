@@ -14,7 +14,7 @@
  * Private properties will be set to private when WordPress requires PHP 5.2.
  * If you change a private property expect that change to break Genesis in the future.
  *
- * @since Genesis 1.5
+ * @since 1.5
  */
 class Genesis_Breadcrumb {
 
@@ -210,7 +210,7 @@ class Genesis_Breadcrumb {
 				}
 
 				// Add the current page title
-				$crumbs[] = strip_tags( get_the_title( $post->ID ) );
+				$crumbs[] = get_the_title( $post->ID );
 
 				$crumb = join( $this->args['sep'], $crumbs );
 			}
@@ -360,7 +360,7 @@ class Genesis_Breadcrumb {
 		elseif ( is_singular() )
 			$crumbs[] = $this->get_single_crumb();
 
-		return join( $this->args['sep'], array_unique( $crumbs ) );
+		return join( $this->args['sep'], array_filter( array_unique( $crumbs ) ) );
 
 	}
 
@@ -444,11 +444,11 @@ add_action('genesis_before_loop', 'genesis_do_breadcrumbs');
 function genesis_do_breadcrumbs() {
 
 	// Conditional Checks
-	if ( is_front_page() && !genesis_get_option( 'breadcrumb_home' ) ) return;
-	if ( is_single() && !genesis_get_option( 'breadcrumb_single' ) ) return;
-	if ( is_page() && !genesis_get_option( 'breadcrumb_page' ) ) return;
-	if ( ( is_archive() || is_search() ) && !genesis_get_option('breadcrumb_archive')) return;
-	if ( is_404() && !genesis_get_option('breadcrumb_404') ) return;
+	if ( ( is_front_page() || is_home() ) && ! genesis_get_option( 'breadcrumb_home' ) ) return;
+	if ( is_single() && ! genesis_get_option( 'breadcrumb_single' ) ) return;
+	if ( is_page() && ! genesis_get_option( 'breadcrumb_page' ) ) return;
+	if ( ( is_archive() || is_search() ) && ! genesis_get_option( 'breadcrumb_archive' ) ) return;
+	if ( is_404() && ! genesis_get_option( 'breadcrumb_404' ) ) return;
 
 	if ( function_exists( 'bcn_display' ) ) {
 		echo '<div class="breadcrumb">'; bcn_display(); echo '</div>';

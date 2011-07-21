@@ -35,13 +35,11 @@ add_action( 'genesis_setup', 'genesis_register_default_widget_areas' );
  */
 function genesis_register_default_widget_areas() {
 
-	if ( genesis_get_option('header_right') ) {
-		genesis_register_sidebar(array(
-			'name' => __('Header Right', 'genesis'),
-			'description' => __('This is the right side of the header', 'genesis'),
-			'id' => 'header-right'
-		));
-	}
+	genesis_register_sidebar(array(
+		'name' => __('Header Right', 'genesis'),
+		'description' => __('This is the right side of the header', 'genesis'),
+		'id' => 'header-right'
+	));
 
 	genesis_register_sidebar(array(
 		'name' => __('Primary Sidebar', 'genesis'),

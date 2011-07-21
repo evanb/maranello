@@ -628,7 +628,7 @@ function genesis_canonical() {
 	if ( ! $canonical )
 		return;
 
-	printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( $canonical ) );
+	printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( apply_filters( 'genesis_canonical', $canonical ) ) );
 
 }
 
@@ -817,10 +817,10 @@ function genesis_do_header() {
 	do_action( 'genesis_site_description' );
 	echo '</div><!-- end #title-area -->';
 
-	if ( genesis_get_option( 'header_right' ) ) {
+	if ( is_active_sidebar( 'header-right' ) ) {
 		echo '<div class="widget-area">';
 		do_action( 'genesis_header_right' );
-		dynamic_sidebar( 'Header Right' );
+		dynamic_sidebar( 'header-right' );
 		echo '</div><!-- end .widget_area -->';
 	}
 

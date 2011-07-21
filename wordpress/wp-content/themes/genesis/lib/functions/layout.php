@@ -14,28 +14,28 @@ add_action('genesis_init', 'genesis_create_initial_layouts', 0);
 function genesis_create_initial_layouts() {
 
 	genesis_register_layout( 'content-sidebar', array(
-		'label' => __('Content/Sidebar', 'genesis'),
+		'label' => __('Content-Sidebar', 'genesis'),
 		'img' => GENESIS_ADMIN_IMAGES_URL . '/layouts/cs.gif',
 		'default' => true
 	) );
 
 	genesis_register_layout( 'sidebar-content', array(
-		'label' => __('Sidebar/Content', 'genesis'),
+		'label' => __('Sidebar-Content', 'genesis'),
 		'img' => GENESIS_ADMIN_IMAGES_URL . '/layouts/sc.gif'
 	) );
 
 	genesis_register_layout( 'content-sidebar-sidebar', array(
-		'label' => __('Content/Sidebar/Sidebar', 'genesis'),
+		'label' => __('Content-Sidebar-Sidebar', 'genesis'),
 		'img' => GENESIS_ADMIN_IMAGES_URL . '/layouts/css.gif'
 	) );
 
 	genesis_register_layout( 'sidebar-sidebar-content', array(
-		'label' => __('Sidebar/Sidebar/Content', 'genesis'),
+		'label' => __('Sidebar-Sidebar-Content', 'genesis'),
 		'img' => GENESIS_ADMIN_IMAGES_URL . '/layouts/ssc.gif'
 	) );
 
 	genesis_register_layout( 'sidebar-content-sidebar', array(
-		'label' => __('Sidebar/Content/Sidebar', 'genesis'),
+		'label' => __('Sidebar-Content-Sidebar', 'genesis'),
 		'img' => GENESIS_ADMIN_IMAGES_URL . '/layouts/scs.gif'
 	) );
 
@@ -235,6 +235,48 @@ function genesis_site_layout() {
 }
 
 /**
+ * A helper function that outputs the form elements necessary to select a layout.
+ *
+ * You must manually wrap this in an HTML element with the class of 'genesis-layout-selector'
+ * in order for the CSS and Javascript to apply properly.
+ *
+ * @since 1.7
+ */
+function genesis_layout_selector( $args = array() ) {
+
+	/** Merge defaults with user args */
+	$args = wp_parse_args( $args, array(
+		'name'     => '',
+		'selected' => '',
+		'echo'     => true
+	) );
+
+	$output = '';
+
+	foreach ( genesis_get_layouts() as $id => $data ) {
+
+		$class = $id == $args['selected'] ? 'selected' : '';
+
+		$output .= sprintf( '<label title="%1$s" class="box %2$s"><img src="%3$s" alt="%1$s" /><br /> <input type="radio" name="%4$s" id="%5$s" value="%5$s" %6$s /></label>',
+				esc_attr( $data['label'] ),
+				esc_attr( $class ),
+				esc_url( $data['img'] ),
+				esc_attr( $args['name'] ),
+				esc_attr( $id ),
+				checked( $id, $args['selected'], false )
+		);
+
+	}
+
+	/** Echo or Return output */
+	if ( $args['echo'] )
+		echo $output;
+	else
+		return $output;
+
+}
+
+/**
 * A helper function to do the logic, and potentially echo/return a structural wrap div.
 *
 * @since 1.6
@@ -260,4 +302,58 @@ function genesis_structural_wrap( $context = '', $output = '<div class="wrap">',
 	else
 		return $output;
 
+}
+
+/**
+ * Helper function for returning layout key 'content-sidebar'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_content_sidebar() {
+	return 'content-sidebar';
+}
+
+/**
+ * Helper function for returning layout key 'sidebar-content'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_sidebar_content() {
+	return 'sidebar-content';
+}
+
+/**
+ * Helper function for returning layout key 'content-sidebar-sidebar'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_content_sidebar_sidebar() {
+	return 'content-sidebar-sidebar';
+}
+
+/**
+ * Helper function for returning layout key 'sidebar-sidebar-content'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_sidebar_sidebar_content() {
+	return 'sidebar-sidebar-content';
+}
+
+/**
+ * Helper function for returning layout key 'sidebar-content-sidebar'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_sidebar_content_sidebar() {
+	return 'sidebar-content-sidebar';
+}
+
+/**
+ * Helper function for returning layout key 'full-width-content'.
+ *
+ * @since 1.7
+ */
+function __genesis_return_full_width_content() {
+	return 'full-width-content';
 }

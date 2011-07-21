@@ -6,9 +6,16 @@ hr.div {
 	margin: 10px 0;
 }
 
+/** Genesis buttons in H2 */
+.genesis-h2-button {
+	margin: 0 0 0 4px;
+	position: relative;
+	top: -3px;
+}
+
 /** Genesis metabox Styles **/
 .genesis-metaboxes {
-	width: 800px;
+	width: 650px;
 	padding-bottom: 20px;
 }
 .genesis-metaboxes .bottom-buttons {
@@ -17,7 +24,7 @@ hr.div {
 }
 
 .genesis-metaboxes .metabox-holder {
-	width: 800px;
+	width: 650px;
 	overflow: hidden;
 	clear: both;
 }
@@ -30,21 +37,48 @@ hr.div {
 }
 
 
-/** In-Post Layout Options Styles **/
-#genesis_inpost_layout_box .inside,
-.form-table .inside {
-	padding: 10px;
-	overflow: auto;
+/** Layout Options Styles **/
+.genesis-layout-selector input {
+	display: none;
+	text-align: center;
 }
-#genesis_inpost_layout_box label.box,
-.form-table label.box {
-	display: block; float: left;
-	margin: 0 10px 10px 0;
+.genesis-layout-selector input#default-layout {
+	display: inline;
 }
-#genesis_inpost_layout_box label.box input,
-.form-table label.box input {
+.genesis-layout-selector label.box {
+	display: block;
 	float: left;
-	margin-right: 5px;
+	margin: 10px 10px 10px 0;
+	text-align: center;
+}
+.genesis-layout-selector label.box img {
+	max-width: 85px;
+	border: 3px solid transparent;
+	margin-bottom: 5px;
+}
+.genesis-layout-selector label.box img:hover {
+	border: 3px solid #ddd;
+}
+.genesis-layout-selector label.box.selected img {
+	border: 3px solid #ccc;
+}
+
+/** Inpost Layout Box */
+#genesis_inpost_layout_box .inside input#default-layout {
+	margin-left: 5px;
+}
+#genesis_inpost_layout_box .genesis-layout-selector {
+	padding-top: 5px;
+}
+
+/** Layout Selector, no JS */
+.no-js .genesis-layout-selector input {
+	display: inline;
+}
+.no-js .genesis-layout-selector label.box img,
+.no-js .genesis-layout-selector label.box img:hover,
+.no-js .genesis-layout-selector label.box.selected img {
+	border: 3px solid transparent;
 }
 
 /* Widgets

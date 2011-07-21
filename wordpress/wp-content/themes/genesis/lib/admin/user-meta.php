@@ -60,19 +60,19 @@ function genesis_user_archive_fields( $user ) {
 
 	?>
 
-		<h3><?php _e('Genesis Author Archive Options', 'genesis'); ?></h3>
+		<h3><?php _e('Genesis Author Archive Settings', 'genesis'); ?></h3>
 		<p><span class="description"><?php _e('These settings apply to this author\'s archive pages.', 'genesis'); ?></span></p>
 		<table class="form-table"><tbody>
 
-		<tr class="form-field">
+		<tr>
 			<th scope="row" valign="top"><label for="headline"><?php _e( 'Custom Archive Headline', 'genesis' ); ?></label></th>
-			<td><input name="meta[headline]" id="headline" type="text" value="<?php echo esc_attr( get_the_author_meta('headline', $user->ID) ); ?>" size="40" /><br />
+			<td><input name="meta[headline]" id="headline" type="text" value="<?php echo esc_attr( get_the_author_meta('headline', $user->ID) ); ?>" class="regular-text" /><br />
 			<span class="description"><?php printf( __('Will display in the %s tag at the top of the first page', 'genesis'), '<code>&lt;h1&gt;&lt;/h1&gt;</code>' ); ?></span></td>
 		</tr>
 
-		<tr class="form-field">
+		<tr>
 			<th scope="row" valign="top"><label for="intro_text"><?php _e( 'Custom Description Text', 'genesis' ); ?></label></th>
-			<td><textarea name="meta[intro_text]" id="intro_text" rows="3" cols="50"><?php echo esc_textarea( get_the_author_meta('intro_text', $user->ID) ); ?></textarea><br />
+			<td><textarea name="meta[intro_text]" id="intro_text" rows="5" cols="30"><?php echo esc_textarea( get_the_author_meta('intro_text', $user->ID) ); ?></textarea><br />
 			<span class="description"><?php _e('This text will be the first paragraph, and display on the first page', 'genesis'); ?></span></td>
 		</tr>
 
@@ -97,23 +97,23 @@ function genesis_user_seo_fields( $user ) {
 
 	?>
 
-		<h3><?php _e('Genesis SEO Options and Settings', 'genesis'); ?></h3>
+		<h3><?php _e('Genesis SEO Settings', 'genesis'); ?></h3>
 		<p><span class="description"><?php _e('These settings apply to this author\'s archive pages.', 'genesis'); ?></span></p>
 		<table class="form-table"><tbody>
 
-		<tr class="form-field">
+		<tr>
 			<th scope="row" valign="top"><label for="doctitle"><?php printf( __('Custom Document %s', 'genesis'), '<code>&lt;title&gt;</code>' ); ?></label></th>
-			<td><input name="meta[doctitle]" id="doctitle" type="text" value="<?php echo esc_attr( get_the_author_meta('doctitle', $user->ID) ); ?>" size="40" /></td>
+			<td><input name="meta[doctitle]" id="doctitle" type="text" value="<?php echo esc_attr( get_the_author_meta('doctitle', $user->ID) ); ?>" class="regular-text" /></td>
 		</tr>
 
-		<tr class="form-field">
+		<tr>
 			<th scope="row" valign="top"><label for="meta-description"><?php printf( __('%s Description', 'genesis'), '<code>META</code>' ); ?></label></th>
-			<td><textarea name="meta[meta_description]" id="meta-description" rows="3" cols="50"><?php echo esc_textarea( get_the_author_meta('meta_description', $user->ID) ); ?></textarea></td>
+			<td><textarea name="meta[meta_description]" id="meta-description" rows="5" cols="30"><?php echo esc_textarea( get_the_author_meta('meta_description', $user->ID) ); ?></textarea></td>
 		</tr>
 
-		<tr class="form-field">
+		<tr>
 			<th scope="row" valign="top"><label for="meta-keywords"><?php printf( __('%s Keywords', 'genesis'), '<code>META</code>' ); ?></label></th>
-			<td><input name="meta[meta_keywords]" id="meta-keywords" type="text" value="<?php echo esc_attr( get_the_author_meta('meta_keywords', $user->ID) ); ?>" size="40" /><br />
+			<td><input name="meta[meta_keywords]" id="meta-keywords" type="text" value="<?php echo esc_attr( get_the_author_meta('meta_keywords', $user->ID) ); ?>" class="regular-text" /><br />
 			<span class="description"><?php _e('Comma separated list', 'genesis'); ?></span></td>
 		</tr>
 
@@ -149,26 +149,18 @@ function genesis_user_layout_fields( $user ) {
 
 	?>
 
-	<h3><?php _e('Genesis Layout Options', 'genesis'); ?></h3>
+	<h3><?php _e('Genesis Layout Settings', 'genesis'); ?></h3>
 	<p><span class="description"><?php _e('These settings apply to this author\'s archive pages.', 'genesis'); ?></span></p>
 	<table class="form-table"><tbody>
 
 	<tr>
 		<th scope="row" valign="top"><label><?php _e('Choose Layout', 'genesis'); ?></label></th>
 		<td>
-		<input type="radio" name="meta[layout]" id="default-layout" value="" <?php checked('', $layout); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label>
+			<div class="genesis-layout-selector">
+				<p><input type="radio" name="meta[layout]" id="default-layout" value="" <?php checked('', $layout); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label></p>
 
-		<br class="clear" /><br />
-
-		<?php
-		foreach ( genesis_get_layouts() as $id => $data ) {
-
-			printf( '<label class="box"><input type="radio" name="meta[layout]" id="%s" value="%s" %s /> <img src="%s" alt="%s" /></label>', esc_attr( $id ), esc_attr( $id ), checked($id, $layout, false), esc_url( $data['img'] ), esc_attr( $data['label'] ) );
-
-		}
-		?>
-
-		<br class="clear" />
+				<p><?php genesis_layout_selector( array( 'name' => 'meta[layout]', 'selected' => $layout ) ); ?></p>
+			</div>
 		</td>
 	</tr>
 

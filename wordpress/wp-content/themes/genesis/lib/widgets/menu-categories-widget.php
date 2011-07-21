@@ -5,19 +5,30 @@
  * @package Genesis
  */
 
-add_action('widgets_init', 'register_genesis_menu_categories_widget');
-function register_genesis_menu_categories_widget() {
-	//unregister_widget('WP_Widget_Categories');
-	register_widget('Genesis_Widget_Menu_Categories');
-}
 
+/**
+ * Genesis Categories Menu widget class.
+ *
+ * @package Genesis
+ * @subpackage Widgets
+ * @since unknown
+ */
 class Genesis_Widget_Menu_Categories extends WP_Widget {
 
+	/**
+	 * Constructor. Set the default widget options and create widget.
+	 */
 	function Genesis_Widget_Menu_Categories() {
 		$widget_ops = array('classname' => 'menu-categories', 'description' => __('Display category navigation for your header', 'genesis') );
 		$this->WP_Widget('menu-categories', __('Genesis - Category Navigation Menu', 'genesis'), $widget_ops);
 	}
 
+	/**
+	 * Echo the widget content.
+	 *
+	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
+	 * @param array $instance The settings for the particular instance of the widget
+	 */
 	function widget($args, $instance) {
 		extract($args);
 
@@ -54,10 +65,25 @@ class Genesis_Widget_Menu_Categories extends WP_Widget {
 		echo $after_widget;
 	}
 
+	/** Update a particular instance.
+	 *
+	 * This function should check that $new_instance is set correctly.
+	 * The newly calculated value of $instance should be returned.
+	 * If "false" is returned, the instance won't be saved/updated.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via form()
+	 * @param array $old_instance Old settings for this instance
+	 * @return array Settings to save or bool false to cancel saving
+	 */
 	function update($new_instance, $old_instance) {
+		$new_instance['title'] = strip_tags( $new_instance['title'] );
 		return $new_instance;
 	}
 
+	/** Echo the settings update form.
+	 *
+	 * @param array $instance Current settings
+	 */
 	function form($instance) {
 
 		$instance = wp_parse_args( (array)$instance, array(
@@ -86,11 +112,13 @@ class Genesis_Widget_Menu_Categories extends WP_Widget {
 		<p><?php _e('Choose the order by which you would like to display your categories', 'genesis'); ?>:</p>
 
 		<p><select name="<?php echo $this->get_field_name('order'); ?>">
-			<option value="ID" <?php selected('id', $instance['order']); ?>>ID</option>
-			<option value="name" <?php selected('name', $instance['order']); ?>>Name</option>
-			<option value="slug" <?php selected('slug', $instance['order']); ?>>Slug</option>
-			<option value="count" <?php selected('count', $instance['order']); ?>>Count</option>
-			<option value="term_group" <?php selected('term_group', $instance['order']); ?>>Term Group</option>
+			<?php
+				printf( '<option value="ID" %s>%s</option>', selected( 'ID', $instance['order'], 0 ), __( 'ID', 'genesis' ) );
+				printf( '<option value="name" %s>%s</option>', selected( 'name', $instance['order'], 0 ), __( 'Name', 'genesis' ) );
+				printf( '<option value="slug" %s>%s</option>', selected( 'slug', $instance['order'], 0 ), __( 'Slug', 'genesis' ) );
+				printf( '<option value="count" %s>%s</option>', selected( 'count', $instance['order'], 0 ), __( 'Count', 'genesis' ) );
+				printf( '<option value="term_group" %s>%s</option>', selected( 'term_group', $instance['order'], 0 ), __( 'Term Group', 'genesis' ) );
+			?>
 		</select></p>
 
 		<p><?php _e('Use the checklist below to choose which categories (and subcategories) you want to include in your Navigation Menu', 'genesis'); ?></p>

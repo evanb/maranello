@@ -23,7 +23,7 @@ function genesis_add_inpost_seo_box() {
 
 	foreach ( (array)get_post_types( array( 'public' => true ) ) as $type ) {
 		if ( post_type_supports( $type, 'genesis-seo' ) || $type == 'post' || $type = 'page' ) {
-			add_meta_box('genesis_inpost_seo_box', __('Genesis SEO Options and Settings', 'genesis'), 'genesis_inpost_seo_box', $type, 'normal', 'high');
+			add_meta_box('genesis_inpost_seo_box', __('Genesis SEO Settings', 'genesis'), 'genesis_inpost_seo_box', $type, 'normal', 'high');
 		}
 	}
 
@@ -151,7 +151,7 @@ function genesis_add_inpost_layout_box() {
 
 	foreach ( (array)get_post_types( array( 'public' => true ) ) as $type ) {
 		if ( post_type_supports( $type, 'genesis-layouts' ) || $type == 'post' || $type = 'page' ) {
-			add_meta_box('genesis_inpost_layout_box', __('Genesis Layout Options', 'genesis'), 'genesis_inpost_layout_box', $type, 'normal', 'high');
+			add_meta_box('genesis_inpost_layout_box', __('Genesis Layout Settings', 'genesis'), 'genesis_inpost_layout_box', $type, 'normal', 'high');
 		}
 	}
 
@@ -161,18 +161,12 @@ function genesis_inpost_layout_box() { ?>
 	<?php wp_nonce_field( plugin_basename(__FILE__), 'genesis_inpost_layout_nonce' ); ?>
 
 	<?php $layout = genesis_get_custom_field('_genesis_layout'); ?>
-
-	<input type="radio" name="_genesis_layout" id="default-layout" value="" <?php checked('', $layout); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label>
-
-	<br class="clear" /><br />
-
-	<?php
-	foreach ( genesis_get_layouts() as $id => $data ) {
-
-		printf( '<label class="box"><input type="radio" name="_genesis_layout" id="%s" value="%s" %s /> <img src="%s" alt="%s" /></label>', esc_attr( $id ), esc_attr( $id ), checked($id, $layout, false), esc_url( $data['img'] ), esc_attr( $data['label'] ) );
-
-	}
-	?>
+	
+	<div class="genesis-layout-selector">
+		<p><input type="radio" name="_genesis_layout" id="default-layout" value="" <?php checked('', $layout); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label></p>
+	
+		<p><?php genesis_layout_selector( array( 'name' => '_genesis_layout', 'selected' => $layout ) ); ?></p>
+	</div>
 
 	<br class="clear" />
 

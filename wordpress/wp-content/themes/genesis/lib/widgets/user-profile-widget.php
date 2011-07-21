@@ -8,15 +8,31 @@
  * @since 0.1.8
  */
 
-add_action('widgets_init', create_function('', "register_widget('Genesis_User_Profile_Widget');"));
+
+/**
+ * Genesis User Profile widget class.
+ *
+ * @package Genesis
+ * @subpackage Widgets
+ * @since 0.1.8
+ */
 class Genesis_User_Profile_Widget extends WP_Widget {
 
+	/**
+	 * Constructor. Set the default widget options and create widget.
+	 */
 	function Genesis_User_Profile_Widget() {
 		$widget_ops = array( 'classname' => 'user-profile', 'description' => __('Displays user profile block with Gravatar', 'genesis') );
 		$control_ops = array( 'width' => 200, 'height' => 250, 'id_base' => 'user-profile' );
 		$this->WP_Widget( 'user-profile', __('Genesis - User Profile', 'genesis'), $widget_ops, $control_ops );
 	}
 
+	/**
+	 * Echo the widget content.
+	 *
+	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
+	 * @param array $instance The settings for the particular instance of the widget
+	 */
 	function widget($args, $instance) {
 		extract($args);
 
@@ -47,8 +63,7 @@ class Genesis_User_Profile_Widget extends WP_Widget {
 				$text .= '</span>';
 
 			if ( $instance['author_info'] == 'text' ) {
-				global $_genesis_formatting_allowedtags;
-				$text .= wp_kses( $instance['bio_text'], $_genesis_formatting_allowedtags );
+				$text .= $instance['bio_text']; // We run KSES on update
 			}
 			else {
 				$text .= get_the_author_meta('description', $instance['user']);
@@ -63,10 +78,26 @@ class Genesis_User_Profile_Widget extends WP_Widget {
 		echo $after_widget;
 	}
 
+	/** Update a particular instance.
+	 *
+	 * This function should check that $new_instance is set correctly.
+	 * The newly calculated value of $instance should be returned.
+	 * If "false" is returned, the instance won't be saved/updated.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via form()
+	 * @param array $old_instance Old settings for this instance
+	 * @return array Settings to save or bool false to cancel saving
+	 */
 	function update($new_instance, $old_instance) {
+		$new_instance['title'] = strip_tags( $new_instance['title'] );
+		$new_instance['bio_text'] = wp_kses( $new_instance['bio_text'], genesis_formatting_allowedtags() );
 		return $new_instance;
 	}
 
+	/** Echo the settings update form.
+	 *
+	 * @param array $instance Current settings
+	 */
 	function form($instance) {
 
 		$instance = wp_parse_args( (array)$instance, array(
@@ -81,26 +112,26 @@ class Genesis_User_Profile_Widget extends WP_Widget {
 		) );
 
 	?>
-		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e("Title"); ?>:</label>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title', 'genesis' ); ?>:</label>
 			<input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo esc_attr( $instance['title'] ); ?>" class="widefat" /></p>
 
 		<p><?php _e('Select a user. The email address for this account will be used to pull the Gravatar image.', 'genesis'); ?></p>
 		<p><?php wp_dropdown_users(array('name' => $this->get_field_name('user'), 'selected' => $instance['user'])); ?></p>
 
-		<p><label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Gravatar Size'); ?>:</label>
+		<p><label for="<?php echo $this->get_field_id('size'); ?>"><?php _e( 'Gravatar Size', 'genesis' ); ?>:</label>
 			<select id="<?php echo $this->get_field_id('size'); ?>" name="<?php echo $this->get_field_name('size'); ?>">
 
 				<?php
 				$sizes = array(__('Small', 'genesis') => 45, __('Medium', 'genesis') => 65, __('Large', 'genesis') => 85, __('Extra Large', 'genesis') => 125);
 				$sizes = apply_filters('genesis_gravatar_sizes', $sizes);
 				foreach ( (array)$sizes as $label => $size ) { ?>
-					<option value="<?php echo $size; ?>" <?php selected($size, $instance['size']); ?>><?php printf('%s (%spx)', $label, $size); ?></option>
+					<option value="<?php echo absint( $size ); ?>" <?php selected($size, $instance['size']); ?>><?php printf('%s (%spx)', $label, $size); ?></option>
 				<?php } ?>
 			</select></p>
 
-		<p><label for="<?php echo $this->get_field_id('alignment'); ?>"><?php _e('Gravatar Alignment'); ?>:</label>
+		<p><label for="<?php echo $this->get_field_id('alignment'); ?>"><?php _e( 'Gravatar Alignment', 'genesis' ); ?>:</label>
 			<select id="<?php echo $this->get_field_id('alignment'); ?>" name="<?php echo $this->get_field_name('alignment'); ?>">
-				<option value="">- None -</option>
+				<option value="">- <?php _e( 'None', 'genesis' ); ?> -</option>
 				<option value="left" <?php selected('left', $instance['alignment']); ?>><?php _e('Left', 'genesis'); ?></option>
 				<option value="right" <?php selected('right', $instance['alignment']); ?>><?php _e('Right', 'genesis'); ?></option>
 			</select></p>

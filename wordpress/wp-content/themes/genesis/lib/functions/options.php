@@ -58,7 +58,7 @@ function genesis_get_option($key, $setting = null) {
 	}
 
 	// option has been cached, cache option
-	$options_cache[$setting][$key] = stripslashes( wp_kses_decode_entities( $options[$key] ) );
+	$options_cache[$setting][$key] = is_array( $options[$key] ) ? stripslashes_deep( $options[$key] ) : stripslashes( wp_kses_decode_entities( $options[$key] ) );
 
 	return $options_cache[$setting][$key];
 

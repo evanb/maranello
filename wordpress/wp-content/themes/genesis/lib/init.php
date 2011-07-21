@@ -33,7 +33,9 @@ function genesis_theme_support() {
 	add_theme_support( 'genesis-import-export-menu' );
 	add_theme_support( 'genesis-readme-menu' );
 	add_theme_support( 'genesis-auto-updates' );
-	add_theme_support( 'genesis-structural-wraps', array( 'header', 'nav', 'subnav', 'footer-widgets', 'footer' ) );
+	
+	if ( ! current_theme_supports( 'genesis-structural-wraps' ) )
+		add_theme_support( 'genesis-structural-wraps', array( 'header', 'nav', 'subnav', 'footer-widgets', 'footer' ) );
 
 }
 
@@ -47,8 +49,10 @@ function genesis_constants() {
 
 	/** Define Theme Info Constants */
 	define( 'PARENT_THEME_NAME', 'Genesis' );
-	define( 'PARENT_THEME_VERSION', '1.6.1' );
-	define( 'PARENT_THEME_RELEASE_DATE', date_i18n( 'F j, Y', '1304312400' ) );
+	define( 'PARENT_THEME_VERSION', '1.7.1' );
+	define( 'PARENT_DB_VERSION', '1703' );
+	define( 'PARENT_THEME_RELEASE_DATE', date_i18n( 'F j, Y', '1310965200' ) );
+	#define( 'PARENT_THEME_RELEASE_DATE', 'TBD' );
 
 	/** Define Directory Location Constants */
 	define( 'PARENT_DIR', get_template_directory() );
@@ -113,9 +117,9 @@ function genesis_load_framework() {
 
 	/** Load Classes */
 	require_once( GENESIS_CLASSES_DIR . '/breadcrumb.php' );
+	require_once( GENESIS_CLASSES_DIR . '/sanitization.php' );
 
 	/** Load Functions */
-	require_once( GENESIS_FUNCTIONS_DIR . '/hooks.php' );
 	require_once( GENESIS_FUNCTIONS_DIR . '/upgrade.php' );
 	require_once( GENESIS_FUNCTIONS_DIR . '/general.php' );
 	require_once( GENESIS_FUNCTIONS_DIR . '/options.php' );
@@ -166,19 +170,11 @@ function genesis_load_framework() {
 	require_once( GENESIS_CSS_DIR . '/load-styles.php' );
 
 	/** Load Widgets */
-	require_once( GENESIS_WIDGETS_DIR . '/user-profile-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/enews-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/featured-post-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/featured-page-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/latest-tweets-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/menu-pages-widget.php' );
-	require_once( GENESIS_WIDGETS_DIR . '/menu-categories-widget.php' );
+	require_once( GENESIS_WIDGETS_DIR . '/widgets.php' );
 
 	/** Load Tools */
 	require_once( GENESIS_TOOLS_DIR . '/custom-field-redirect.php' );
-	if ( current_theme_supports( 'post-templates' ) ) {
-		require_once( GENESIS_TOOLS_DIR . '/post-templates.php' );
-	}
+	require_if_theme_supports( 'post-templates', GENESIS_TOOLS_DIR . '/post-templates.php' );
 
 	global $_genesis_formatting_allowedtags;
 	$_genesis_formatting_allowedtags = genesis_formatting_allowedtags();

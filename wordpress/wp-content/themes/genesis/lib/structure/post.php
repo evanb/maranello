@@ -160,8 +160,10 @@ add_action('genesis_before_post_content', 'genesis_post_info');
  * @since 0.2.3
  */
 function genesis_post_info() {
+	
+	global $post;
 
-	if ( is_page() )
+	if ( is_page( $post->ID ) )
 		return; // don't do post-info on pages
 
 	$post_info = '[post_date] ' . __('By', 'genesis') . ' [post_author_posts_link] [post_comments] [post_edit]';
@@ -177,8 +179,10 @@ add_action('genesis_after_post_content', 'genesis_post_meta');
  * @since 0.2.3
  */
 function genesis_post_meta() {
+	
+	global $post;
 
-	if ( is_page() )
+	if ( is_page( $post->ID ) )
 		return; // don't do post-meta on pages
 
 	$post_meta = '[post_categories] [post_tags]';

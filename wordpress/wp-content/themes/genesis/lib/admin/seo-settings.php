@@ -77,15 +77,13 @@ add_action('admin_notices', 'genesis_seo_settings_notice');
  */
 function genesis_seo_settings_notice() {
 
-	if ( !isset($_REQUEST['page']) || $_REQUEST['page'] != 'seo-settings' )
+	if ( ! isset($_REQUEST['page'] ) || $_REQUEST['page'] != 'seo-settings' )
 		return;
 
-	if ( isset( $_REQUEST['reset'] ) && $_REQUEST['reset'] == 'true' ) {
-		echo '<div id="message" class="updated" id="message"><p><strong>'.__('SEO Settings Reset', 'genesis').'</strong></p></div>';
-	}
-	elseif ( isset( $_REQUEST['settings-updated'] ) && $_REQUEST['settings-updated'] == 'true' ) {
-		echo '<div id="message" class="updated" id="message"><p><strong>'.__('SEO Settings Saved', 'genesis').'</strong></p></div>';
-	}
+	if ( isset( $_REQUEST['reset'] ) && 'true' == $_REQUEST['reset'] )
+		echo '<div id="message" class="updated" id="message"><p><strong>' . __( 'Settings reset.', 'genesis' ) . '</strong></p></div>';
+	elseif ( isset( $_REQUEST['settings-updated'] ) && 'true' == $_REQUEST['settings-updated'] )
+		echo '<div id="message" class="updated" id="message"><p><strong>' . __( 'Settings saved.' ) . '</strong></p></div>';
 
 }
 
@@ -110,12 +108,11 @@ function genesis_seo_settings_scripts() {
 function genesis_seo_settings_boxes() {
 	global $_genesis_seo_settings_pagehook;
 
-	add_meta_box('genesis-seo-settings-doctitle', __('Doctitle Settings', 'genesis'), 'genesis_seo_settings_doctitle_box', $_genesis_seo_settings_pagehook, 'column1');
-	add_meta_box('genesis-seo-settings-homepage', __('Homepage Settings', 'genesis'), 'genesis_seo_settings_homepage_box', $_genesis_seo_settings_pagehook, 'column1');
-	add_meta_box('genesis-seo-settings-archives', __('Archives Settings', 'genesis'), 'genesis_seo_settings_archives_box', $_genesis_seo_settings_pagehook, 'column1');
-	add_meta_box('genesis-seo-settings-dochead', __('Document Head Settings', 'genesis'), 'genesis_seo_settings_document_head_box', $_genesis_seo_settings_pagehook, 'column2');
-	add_meta_box('genesis-seo-settings-robots', __('Robots Meta Settings', 'genesis'), 'genesis_seo_settings_robots_meta_box', $_genesis_seo_settings_pagehook, 'column2');
-	add_meta_box('genesis-seo-settings-nofollow', __('Link nofollow Settings', 'genesis'), 'genesis_seo_settings_nofollow_box', $_genesis_seo_settings_pagehook, 'column2');
+	add_meta_box('genesis-seo-settings-doctitle', __('Doctitle Settings', 'genesis'), 'genesis_seo_settings_doctitle_box', $_genesis_seo_settings_pagehook, 'main');
+	add_meta_box('genesis-seo-settings-homepage', __('Homepage Settings', 'genesis'), 'genesis_seo_settings_homepage_box', $_genesis_seo_settings_pagehook, 'main');
+	add_meta_box('genesis-seo-settings-dochead', __('Document Head Settings', 'genesis'), 'genesis_seo_settings_document_head_box', $_genesis_seo_settings_pagehook, 'main');
+	add_meta_box('genesis-seo-settings-robots', __('Robots Meta Settings', 'genesis'), 'genesis_seo_settings_robots_meta_box', $_genesis_seo_settings_pagehook, 'main');
+	add_meta_box('genesis-seo-settings-archives', __('Archives Settings', 'genesis'), 'genesis_seo_settings_archives_box', $_genesis_seo_settings_pagehook, 'main');
 }
 
 add_filter('screen_layout_columns', 'genesis_seo_settings_layout_columns', 10, 2);
@@ -126,7 +123,7 @@ function genesis_seo_settings_layout_columns($columns, $screen) {
 	global $_genesis_seo_settings_pagehook;
 	if ($screen == $_genesis_seo_settings_pagehook) {
 		// This page should only have 2 column options
-		$columns[$_genesis_seo_settings_pagehook] = 2;
+		$columns[$_genesis_seo_settings_pagehook] = 1;
 	}
 	return $columns;
 }
@@ -136,20 +133,7 @@ function genesis_seo_settings_layout_columns($columns, $screen) {
  * builds the form, outputs necessary JS stuff, and fires <code>do_meta_boxes()</code>
  */
 function genesis_seo_settings_admin() {
-global $_genesis_seo_settings_pagehook, $screen_layout_columns;
-if( $screen_layout_columns == 3 ) {
-	$width = 'width: 32.67%';
-	$hide2 = $hide3 = ' display: block;';
-}
-elseif( $screen_layout_columns == 2 ) {
-	$width = 'width: 49%;';
-	$hide2 = ' display: block;';
-	$hide3 = ' display: none;';
-}
-else {
-	$width = 'width: 99%;';
-	$hide2 = $hide3 = ' display: none;';
-}
+	global $_genesis_seo_settings_pagehook, $wp_meta_boxes;
 ?>
 	<div id="genesis-seo-settings" class="wrap genesis-metaboxes">
 	<form method="post" action="options.php">
@@ -161,16 +145,17 @@ else {
 		<?php screen_icon('options-general'); ?>
 		<h2>
 			<?php _e('Genesis - SEO Settings', 'genesis'); ?>
-			<input type="submit" class="button-primary add-new-h2" value="<?php _e('Save Settings', 'genesis') ?>" />
-			<input type="submit" class="button-highlighted add-new-h2" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[reset]" value="<?php _e('Reset Settings', 'genesis'); ?>" onclick="return genesis_confirm('<?php echo esc_js( __('Are you sure you want to reset?', 'genesis') ); ?>');" />
+			<input type="submit" class="button-primary genesis-h2-button" value="<?php _e('Save Settings', 'genesis') ?>" />
+			<input type="submit" class="button-highlighted genesis-h2-button" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[reset]" value="<?php _e('Reset Settings', 'genesis'); ?>" onclick="return genesis_confirm('<?php echo esc_js( __('Are you sure you want to reset?', 'genesis') ); ?>');" />
 		</h2>
 
 		<div class="metabox-holder">
-			<div class="postbox-container" style="<?php echo $width; ?>">
-				<?php do_meta_boxes($_genesis_seo_settings_pagehook, 'column1', null); ?>
-			</div>
-			<div class="postbox-container" style="<?php echo $width; echo $hide2; ?>">
-				<?php do_meta_boxes($_genesis_seo_settings_pagehook, 'column2', null); ?>
+			<div class="postbox-container" style="width: 99%;">
+				<?php
+				do_meta_boxes($_genesis_seo_settings_pagehook, 'main', null);
+				if ( isset( $wp_meta_boxes[$_genesis_seo_settings_pagehook]['column2'] ) )
+				do_meta_boxes($_genesis_seo_settings_pagehook, 'column2', null);
+				?>
 			</div>
 		</div>
 
@@ -211,7 +196,7 @@ function genesis_seo_settings_doctitle_box() { ?>
 	<p><label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[append_site_title]" value="1" <?php checked(1, genesis_get_seo_option('append_site_title')); ?> /> <?php _e('Append Site Name to Doctitle on inner pages?', 'genesis'); ?> </label></p>
 
 	<p><?php _e('Doctitle (<code>&lt;title&gt;</code>) Append Location', 'genesis'); ?>:<br />
-	<span class="description"><?php _e('Determines what side the appended doctitle text will go on', 'genesis'); ?></span></p>
+	<span class="description"><?php _e('Determines what side the appended doctitle text will go on.', 'genesis'); ?></span></p>
 
 	<p><label><input type="radio" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[doctitle_seplocation]" value="left" <?php checked('left', genesis_get_seo_option('doctitle_seplocation')); ?> />
 	<?php _e('Left', 'genesis'); ?></label>
@@ -221,7 +206,7 @@ function genesis_seo_settings_doctitle_box() { ?>
 	<p><?php _e('Doctitle (<code>&lt;title&gt;</code>) Separator', 'genesis'); ?>:
 	<input type="text" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[doctitle_sep]" value="<?php echo esc_attr( genesis_get_seo_option('doctitle_sep') ); ?>" size="15" /></p>
 
-	<p><span class="description"><?php _e('<b>NOTE:</b> If the doctitle consists of two parts (Title &amp; Appended Text), then the Doctitle Separator will go between them.', 'genesis'); ?></span></p>
+	<p><span class="description"><?php _e('If the doctitle consists of two parts (Title &amp; Appended Text), then the Doctitle Separator will go between them.', 'genesis'); ?></span></p>
 
 <?php
 }
@@ -239,21 +224,21 @@ function genesis_seo_settings_homepage_box() { ?>
 	<?php _e('Neither. I\'ll manually wrap my own text on the homepage', 'genesis'); ?></label></p>
 
 	<p><?php _e('Home Doctitle', 'genesis'); ?>:<br />
-	<input type="text" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_doctitle]" value="<?php echo esc_attr( genesis_get_seo_option('home_doctitle') ); ?>" size="40" /></p>
+	<input type="text" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_doctitle]" value="<?php echo esc_attr( genesis_get_seo_option('home_doctitle') ); ?>" size="80" /></p>
 
-	<p><span class="description"><?php _e('<b>NOTE:</b> If you leave the doctitle field blank, your site&rsquo;s title will be used instead.', 'genesis'); ?></span></p>
+	<p><span class="description"><?php _e('If you leave the doctitle field blank, your site&rsquo;s title will be used instead.', 'genesis'); ?></span></p>
 
 	<p><?php _e('Home META Description', 'genesis'); ?>:<br />
-	<textarea name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_description]" rows="3" cols="34"><?php echo esc_textarea( genesis_get_seo_option('home_description') ); ?></textarea></p>
+	<textarea name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_description]" rows="3" cols="70"><?php echo esc_textarea( genesis_get_seo_option('home_description') ); ?></textarea></p>
 
-	<p><span class="description"><?php _e('<b>NOTE:</b> The META Description can be used to determine the text used under the title on search engine results pages.', 'genesis'); ?></span></p>
+	<p><span class="description"><?php _e('The META Description can be used to determine the text used under the title on search engine results pages.', 'genesis'); ?></span></p>
 
 	<p><?php _e('Home META Keywords (comma separated)', 'genesis'); ?>:<br />
-	<input type="text" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_keywords]" value="<?php echo esc_attr( genesis_get_seo_option('home_keywords') ); ?>" size="40" /></p>
+	<input type="text" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_keywords]" value="<?php echo esc_attr( genesis_get_seo_option('home_keywords') ); ?>" size="80" /></p>
 
-	<p><span class="description"><?php _e('<b>NOTE:</b> Keywords are generally ignored by Search Engines.', 'genesis'); ?></span></p>
+	<p><span class="description"><?php _e('Keywords are generally ignored by Search Engines.', 'genesis'); ?></span></p>
 
-	<p><?php _e('Homepage Robots Meta Tags:', 'genesis'); ?><p>
+	<h4><?php _e('Homepage Robots Meta Tags:', 'genesis'); ?></h4>
 
 	<p>
 		<label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[home_noindex]" value="1" <?php checked(1, genesis_get_seo_option('home_noindex')); ?> /> <?php printf( __('Apply %s to the homepage?', 'genesis'), '<code>noindex</code>' ); ?> </label><br />
@@ -264,20 +249,11 @@ function genesis_seo_settings_homepage_box() { ?>
 <?php
 }
 
-function genesis_seo_settings_archives_box() { ?>
-
-	<p><label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[canonical_archives]" value="1" <?php checked(1, genesis_get_seo_option('canonical_archives')); ?> /> <?php printf( __('Canonical Paginated Archives', 'genesis') ); ?> </label></p>
-
-	<p><span class="description"><?php _e('This option points search engines to the first page of an archive, if viewing a paginated page. If you do not know what this means, leave it on.', 'genesis'); ?></span></p>
-
-<?php
-}
-
 function genesis_seo_settings_document_head_box() { ?>
 
 	<p><span class="description"><?php printf( __('By default, WordPress places several tags in your document %1$s. Most of these tags are completely unnecessary, and provide no SEO value whatsoever. They just make your site slower to load. Choose which tags you would like included in your document %1$s. If you do not know what something is, leave it unchecked.', 'genesis'), '<code>&lt;head&gt;</code>' ); ?></span></p>
 
-	<p><b><?php _e('Relationship Link Tags:', 'genesis'); ?></b></p>
+	<h4><?php _e('Relationship Link Tags:', 'genesis'); ?></h4>
 
 	<p>
 		<label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[head_index_rel_link]" value="1" <?php checked(1, genesis_get_seo_option('head_index_rel_link')); ?> /> <?php printf( __('Index %s link tag', 'genesis'), '<code>rel</code>' ); ?></label><br />
@@ -286,15 +262,15 @@ function genesis_seo_settings_document_head_box() { ?>
 		<label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[head_adjacent_posts_rel_link]" value="1" <?php checked(1, genesis_get_seo_option('head_adjacent_posts_rel_link')); ?> /> <?php printf( __('Adjacent Posts %s link tag', 'genesis'), '<code>rel</code>' ); ?></label>
 	</p>
 
-	<p><b><?php _e('Windows Live Writer Support:', 'genesis'); ?></b></p>
+	<h4><?php _e('Windows Live Writer Support:', 'genesis'); ?></h4>
 
 	<p><label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[head_wlwmanifest_link]" value="1" <?php checked(1, genesis_get_seo_option('head_wlwmanifest_link')); ?> /> <?php printf( __('Include Windows Live Writer Support Tag?', 'genesis') ); ?></label></p>
 
-	<p><b><?php _e('Shortlink Tag:', 'genesis'); ?></b></p>
+	<h4><?php _e('Shortlink Tag:', 'genesis'); ?></h4>
 
 	<p><label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[head_shortlink]" value="1" <?php checked(1, genesis_get_seo_option('head_shortlink')); ?> /> <?php printf( __('Include Shortlink tag?', 'genesis') ); ?></label></p>
 
-	<p><span class="description"><?php _e('<b>NOTE:</b> The shortlink tag might have some use for 3rd party service discoverability, but it has no SEO value whatsoever.', 'genesis'); ?></span></p>
+	<p><span class="description"><?php _e('The shortlink tag might have some use for 3rd party service discoverability, but it has no SEO value whatsoever.', 'genesis'); ?></span></p>
 
 <?php
 }
@@ -329,9 +305,11 @@ function genesis_seo_settings_robots_meta_box() { ?>
 <?php
 }
 
-function genesis_seo_settings_nofollow_box() { ?>
+function genesis_seo_settings_archives_box() { ?>
 
-	<p><span class="description"><?php printf( __('<b>NOTE:</b> Don&apos;t be alarmed. We have deprecated these settings, because according to the <a href="%s" target="_blank">latest information available</a>, applying %s to internal links provides no SEO value to your site.', 'genesis'), 'http://www.mattcutts.com/blog/pagerank-sculpting/', '<code>nofollow</code>' ); ?></span></p>
+	<p><label><input type="checkbox" name="<?php echo GENESIS_SEO_SETTINGS_FIELD; ?>[canonical_archives]" value="1" <?php checked(1, genesis_get_seo_option('canonical_archives')); ?> /> <?php printf( __('Canonical Paginated Archives', 'genesis') ); ?> </label></p>
+
+	<p><span class="description"><?php _e('This option points search engines to the first page of an archive, if viewing a paginated page. If you do not know what this means, leave it on.', 'genesis'); ?></span></p>
 
 <?php
 }

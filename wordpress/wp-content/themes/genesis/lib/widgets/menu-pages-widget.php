@@ -5,20 +5,31 @@
  * @package Genesis
  */
 
-add_action('widgets_init', 'register_genesis_menu_pages_widget');
-function register_genesis_menu_pages_widget() {
-	//unregister_widget('WP_Widget_Pages');
-	register_widget('Genesis_Menu_Pages_Widget');
-}
 
+/**
+ * Genesis Pages Menu widget class.
+ *
+ * @package Genesis
+ * @subpackage Widgets
+ * @since unknown
+ */
 class Genesis_Menu_Pages_Widget extends WP_Widget {
 
+	/**
+	 * Constructor. Set the default widget options and create widget.
+	 */
 	function Genesis_Menu_Pages_Widget() {
 		$widget_ops = array( 'classname' => 'menupages', 'description' => __('Display page navigation for your header', 'genesis') );
 		$control_ops = array( 'width' => 200, 'height' => 250, 'id_base' => 'menu-pages' );
 		$this->WP_Widget( 'menu-pages', __('Genesis - Page Navigation Menu', 'genesis'), $widget_ops, $control_ops );
 	}
 
+	/**
+	 * Echo the widget content.
+	 *
+	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
+	 * @param array $instance The settings for the particular instance of the widget
+	 */
 	function widget($args, $instance) {
 		extract($args);
 
@@ -56,10 +67,25 @@ class Genesis_Menu_Pages_Widget extends WP_Widget {
 		echo $after_widget;
 	}
 
+	/** Update a particular instance.
+	 *
+	 * This function should check that $new_instance is set correctly.
+	 * The newly calculated value of $instance should be returned.
+	 * If "false" is returned, the instance won't be saved/updated.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via form()
+	 * @param array $old_instance Old settings for this instance
+	 * @return array Settings to save or bool false to cancel saving
+	 */
 	function update($new_instance, $old_instance) {
+		$new_instance['title'] = strip_tags( $new_instance['title'] );
 		return $new_instance;
 	}
 
+	/** Echo the settings update form.
+	 *
+	 * @param array $instance Current settings
+	 */
 	function form($instance) {
 
 		$instance = wp_parse_args( (array)$instance, array(
@@ -87,13 +113,15 @@ class Genesis_Menu_Pages_Widget extends WP_Widget {
 		<p><?php _e('Choose the order by which you would like to display your pages', 'genesis'); ?>:</p>
 
 		<p><select name="<?php echo $this->get_field_name('order'); ?>">
-			<option value="menu_order" <?php selected('menu_order', $instance['order']); ?>>Menu Order</option>
-			<option value="ID" <?php selected('ID', $instance['order']); ?>>ID</option>
-			<option value="post_title" <?php selected('post_title', $instance['order']); ?>>Title</option>
-			<option value="post_date" <?php selected('post_date', $instance['order']); ?>>Date Created</option>
-			<option value="post_modified" <?php selected('post_modified', $instance['order']); ?>>Date Modified</option>
-			<option value="post_author" <?php selected('post_author', $instance['order']); ?>>Author</option>
-			<option value="post_name" <?php selected('post_name', $instance['order']); ?>>Slug</option>
+			<?php
+				printf( '<option value="menu_order" %s>%s</option>', selected( 'menu_order', $instance['order'], 0 ), __( 'Menu Order', 'genesis' ) );
+				printf( '<option value="ID" %s>%s</option>', selected( 'ID', $instance['order'], 0 ), __( 'ID', 'genesis' ) );
+				printf( '<option value="post_title" %s>%s</option>', selected( 'post_title', $instance['order'], 0 ), __( 'Title', 'genesis' ) );
+				printf( '<option value="post_date" %s>%s</option>', selected( 'post_date', $instance['order'], 0 ), __( 'Date Created', 'genesis' ) );
+				printf( '<option value="post_modified" %s>%s</option>', selected( 'post_modified', $instance['order'], 0 ), __( 'Date Modified', 'genesis' ) );
+				printf( '<option value="post_author" %s>%s</option>', selected( 'post_author', $instance['order'], 0 ), __( 'Author', 'genesis' ) );
+				printf( '<option value="post_name" %s>%s</option>', selected( 'post_name', $instance['order'], 0 ), __( 'Slug', 'genesis' ) );
+			?>
 		</select></p>
 
 		<p><?php _e('Use the checklist below to choose which pages (and subpages) you want to include in your Navigation Menu', 'genesis'); ?></p>

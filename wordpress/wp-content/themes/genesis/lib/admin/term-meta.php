@@ -29,7 +29,7 @@ function genesis_taxonomy_archive_options( $tag, $taxonomy ) {
 	$tax = get_taxonomy( $taxonomy );
 ?>
 
-	<h3><?php _e('Genesis Archive Options', 'genesis'); ?></h3>
+	<h3><?php _e('Genesis Archive Settings', 'genesis'); ?></h3>
 	<table class="form-table"><tbody>
 
 	<tr>
@@ -69,7 +69,7 @@ function genesis_taxonomy_seo_options( $tag, $taxonomy ) {
 	$tax = get_taxonomy( $taxonomy );
 ?>
 
-	<h3><?php _e('Genesis SEO Options and Settings', 'genesis'); ?></h3>
+	<h3><?php _e('Genesis SEO Settings', 'genesis'); ?></h3>
 	<table class="form-table"><tbody>
 
 	<tr class="form-field">
@@ -127,25 +127,17 @@ function genesis_taxonomy_layout_options($tag, $taxonomy) {
 	$tax = get_taxonomy( $taxonomy );
 ?>
 
-	<h3><?php _e('Genesis Layout Options', 'genesis'); ?></h3>
+	<h3><?php _e('Genesis Layout Settings', 'genesis'); ?></h3>
 	<table class="form-table"><tbody>
 
 	<tr>
 		<th scope="row" valign="top"><label><?php _e('Choose Layout', 'genesis'); ?></label></th>
-		<td>
-			<p>
-			<input type="radio" name="meta[layout]" id="default-layout" value="" <?php checked('', $tag->meta['layout']); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label>
-			</p>
+		<td>			
+			<div class="genesis-layout-selector">
+				<p><input type="radio" name="meta[layout]" id="default-layout" value="" <?php checked('', $tag->meta['layout']); ?> /> <label class="default" for="default-layout"><?php printf( __('Default Layout set in <a href="%s">Theme Settings</a>', 'genesis'), menu_page_url( 'genesis', 0 ) ); ?></label></p>
 
-			<p class="clear">
-			<?php
-			foreach ( genesis_get_layouts() as $id => $data ) {
-
-				printf( '<label class="box"><input type="radio" name="meta[layout]" id="%s" value="%s" %s /> <img src="%s" alt="%s" /></label>', esc_attr( $id ), esc_attr( $id ), checked($id, $tag->meta['layout'], false), esc_url( $data['img'] ), esc_attr( $data['label'] ) );
-
-			}
-			?>
-			<br class="clear" /></p>
+				<p><?php genesis_layout_selector( array( 'name' => 'meta[layout]', 'selected' => $tag->meta['layout'] ) ); ?></p>
+			</div>
 		</td>
 	</tr>
 

@@ -2,9 +2,9 @@
 /**
  * This file defines return functions to be used as shortcodes
  * in the post-info and post-meta sections.
- * 
+ *
  * @package Genesis
- * 
+ *
  * @example <code>[post_something]</code>
  * @example <code>[post_something before="<em>" after="</em>" foo="bar"]</code>
  */
@@ -12,14 +12,14 @@
 add_shortcode( 'post_date', 'genesis_post_date_shortcode' );
 /**
  * This function produces the date of post publication
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_date]</code> is the default usage
  * @example <code>[post_date format="F j, Y" before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_date_shortcode( $atts ) {
 
@@ -31,7 +31,7 @@ function genesis_post_date_shortcode( $atts ) {
 	);
 	$atts = shortcode_atts( $defaults, $atts );
 
-	$display = ( 'relative' == $atts['format'] ) ? human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'genesis' ) : get_the_time( $atts['format'] );
+	$display = ( 'relative' == $atts['format'] ) ? genesis_human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'genesis' ) : get_the_time( $atts['format'] );
 
 	$output = sprintf( '<span class="date published time" title="%5$s">%1$s%3$s%4$s%2$s</span> ', $atts['before'], $atts['after'], $atts['label'], $display, get_the_time( 'Y-m-d\TH:i:sO' ) );
 
@@ -42,18 +42,18 @@ function genesis_post_date_shortcode( $atts ) {
 add_shortcode( 'post_time', 'genesis_post_time_shortcode' );
 /**
  * This function produces the time of post publication
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_time]</code> is the default usage
  * @example <code>[post_time format="g:i a" before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_time_shortcode( $atts ) {
 
-	$defaults = array( 
+	$defaults = array(
 		'format' => get_option( 'time_format' ),
 		'before' => '',
 		'after'  => '',
@@ -70,14 +70,14 @@ function genesis_post_time_shortcode( $atts ) {
 add_shortcode( 'post_author', 'genesis_post_author_shortcode' );
 /**
  * This function produces the author of the post (display name)
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_author]</code> is the default usage
  * @example <code>[post_author before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_author_shortcode( $atts ) {
 
@@ -96,14 +96,14 @@ function genesis_post_author_shortcode( $atts ) {
 add_shortcode( 'post_author_link', 'genesis_post_author_link_shortcode' );
 /**
  * This function produces the author of the post (link to author URL)
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_author_link]</code> is the default usage
  * @example <code>[post_author_link before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_author_link_shortcode( $atts ) {
 
@@ -131,14 +131,14 @@ function genesis_post_author_link_shortcode( $atts ) {
 add_shortcode( 'post_author_posts_link', 'genesis_post_author_posts_link_shortcode' );
 /**
  * This function produces the author of the post (link to author archive)
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_author_posts_link]</code> is the default usage
  * @example <code>[post_author_posts_link before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_author_posts_link_shortcode( $atts ) {
 
@@ -162,14 +162,14 @@ function genesis_post_author_posts_link_shortcode( $atts ) {
 add_shortcode( 'post_comments', 'genesis_post_comments_shortcode' );
 /**
  * This function produces the comment link
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_comments]</code> is the default usage
  * @example <code>[post_comments zero="No Comments" one="1 Comment" more="% Comments"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_comments_shortcode( $atts ) {
 
@@ -202,14 +202,14 @@ function genesis_post_comments_shortcode( $atts ) {
 add_shortcode( 'post_tags', 'genesis_post_tags_shortcode' );
 /**
  * This function produces the tag link list
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_tags]</code> is the default usage
  * @example <code>[post_tags sep=", " before="Tags: " after="bar"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_tags_shortcode( $atts ) {
 
@@ -233,14 +233,14 @@ function genesis_post_tags_shortcode( $atts ) {
 add_shortcode( 'post_categories', 'genesis_post_categories_shortcode' );
 /**
  * This function produces the category link list
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_categories]</code> is the default usage
  * @example <code>[post_categories sep=", "]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_categories_shortcode( $atts ) {
 
@@ -262,7 +262,7 @@ function genesis_post_categories_shortcode( $atts ) {
 add_shortcode( 'post_terms', 'genesis_post_terms_shortcode' );
 /**
  * Add linked post taxonomy terms via shortcode
- * 
+ *
  * @since 1.6
  *
  * @global mixed $post
@@ -273,39 +273,39 @@ function genesis_post_terms_shortcode( $atts ) {
 
 	global $post;
 
-    $defaults = array(
-        'sep'      => ', ',
-        'before'   => __( 'Filed Under: ', 'genesis' ),
-        'after'    => '',
-        'taxonomy' => 'category'
-    );
-    $atts = shortcode_atts( $defaults, $atts );
- 
-    $terms = get_the_term_list( $post->ID, $atts['taxonomy'], $atts['before'], trim( $atts['sep'] ) . ' ', $atts['after'] );
+		$defaults = array(
+				'sep'      => ', ',
+				'before'   => __( 'Filed Under: ', 'genesis' ),
+				'after'    => '',
+				'taxonomy' => 'category'
+		);
+		$atts = shortcode_atts( $defaults, $atts );
 
-    if ( is_wp_error( $terms ) )
-        return false;
+		$terms = get_the_term_list( $post->ID, $atts['taxonomy'], $atts['before'], trim( $atts['sep'] ) . ' ', $atts['after'] );
 
-    if ( empty( $terms ) )
-        return false;
+		if ( is_wp_error( $terms ) )
+				return false;
 
-    $output = '<span class="terms">' . $terms . '</span>';
+		if ( empty( $terms ) )
+				return false;
 
-    return apply_filters( 'genesis_post_terms_shortcode', $output, $terms, $atts );
+		$output = '<span class="terms">' . $terms . '</span>';
+
+		return apply_filters( 'genesis_post_terms_shortcode', $output, $terms, $atts );
 
 }
 
 add_shortcode( 'post_edit', 'genesis_post_edit_shortcode' );
 /**
  * This function produces the edit post link for logged in users
- * 
+ *
  * @since Unknown
- * 
+ *
  * @example <code>[post_edit]</code> is the default usage
  * @example <code>[post_edit link="Edit", before="<em>" after="</em>"]</code>
- * 
+ *
  * @param array $atts Shortcode attributes
- * @return string 
+ * @return string
  */
 function genesis_post_edit_shortcode( $atts ) {
 
